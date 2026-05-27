@@ -272,6 +272,18 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 .deploy-banner .dclose{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.5);
   cursor:pointer;font-size:16px;line-height:1;padding:0 4px}
 .deploy-banner .dclose:hover{color:#fff}
+
+/* API KEY INPUT IN NAV */
+.nav-apikey-wrap{display:flex;align-items:center;gap:6px;margin-left:8px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+  border-radius:4px;padding:4px 10px}
+.nav-apikey-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+  color:rgba(255,255,255,.4);white-space:nowrap}
+#nav-apikey-input{background:transparent;border:none;outline:none;
+  font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.9);
+  width:220px;letter-spacing:.04em}
+#nav-apikey-input::placeholder{color:rgba(255,255,255,.25);font-size:10px}
+.nav-apikey-status{font-size:12px;width:14px;text-align:center}
 </style>
 </head>
 <body>
@@ -305,15 +317,23 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
     </div>
   </div>
   <button class="nav-home" onclick="showCover()">⌂ HOME</button>
+  <div class="nav-apikey-wrap" id="nav-apikey-wrap">
+    <span class="nav-apikey-label">API KEY</span>
+    <input type="password" id="nav-apikey-input"
+      placeholder="sk-ant-api03-..."
+      oninput="navApiKeyChanged()"
+      autocomplete="off" spellcheck="false">
+    <span class="nav-apikey-status" id="nav-apikey-status"></span>
+  </div>
 </nav>
 
-<!-- Deploy banner — shown when API key is missing (file:// context) -->
+<!-- Status banner -->
 <div class="deploy-banner hidden" id="deploy-banner">
-  <span>⚠ <strong>AI 報告功能需要部署到網頁伺服器才能使用。</strong>
-  建議免費方案：拖曳 HTML 到 <strong>drop.netlify.com</strong> → 立即取得永久網址，書籤後隨時使用。</span>
-  <button class="dbtn" onclick="window.open('https://drop.netlify.com','_blank')">開啟 Netlify Drop ↗</button>
-  <button class="dclose" onclick="closeBanner()">✕</button>
+  <span>⚠ <strong>請先輸入 Anthropic API Key</strong>（右上角輸入欄，格式：sk-ant-...），AI 報告功能才能使用。
+  API Key 僅存在瀏覽器工作階段記憶體，不會上傳或儲存。</span>
+  <button class="dbtn" onclick="closeBanner()">✕</button>
 </div>
+
 
 <!-- ══ COVER ══ -->
 <div class="page visible" id="page-cover">
@@ -801,12 +821,26 @@ function tSec(id){document.getElementById(id).classList.toggle('open')}
 
 // ── API KEY ──
 // ★ 在下方引號內填入您的 Anthropic API Key，存檔後部署即可零設定使用
-var EMBEDDED_API_KEY = '';
+var EMBEDDED_API_KEY = ''; // For direct embedding (optional)
 
-function getApiKey(){ return EMBEDDED_API_KEY.trim(); }
+function getApiKey(){
+  var stored = sessionStorage.getItem('yt_api_key') || '';
+  return stored.trim() || EMBEDDED_API_KEY.trim();
+}
 
 // No-op stubs (UI removed)
-function apikeyChanged(){}
+function navApiKeyChanged(){
+  var val = (document.getElementById('nav-apikey-input')||{value:''}).value.trim();
+  if(val) sessionStorage.setItem('yt_api_key', val);
+  else sessionStorage.removeItem('yt_api_key');
+  var st = document.getElementById('nav-apikey-status');
+  if(st) st.textContent = val ? '✓' : '';
+  if(val && document.getElementById('deploy-banner') &&
+     !document.getElementById('deploy-banner').classList.contains('hidden')){
+    closeBanner();
+  }
+}
+function apikeyChanged(){} // legacy no-op
 
 function closeBanner(){
   document.getElementById('deploy-banner').classList.add('hidden');
@@ -862,7 +896,16 @@ window.addEventListener('DOMContentLoaded',()=>{
   initAbd(); initThy(); initCar();
   certInitDate(); certRenderOrder();
   // Show banner if no API key embedded
-  if(!EMBEDDED_API_KEY.trim()) showBanner();
+  // Restore saved key to input on load
+  var savedKey = sessionStorage.getItem('yt_api_key') || '';
+  if(savedKey){
+    var inp = document.getElementById('nav-apikey-input');
+    if(inp){ inp.value = savedKey;
+      var st2 = document.getElementById('nav-apikey-status');
+      if(st2) st2.textContent = '✓';
+    }
+  }
+  if(!savedKey && !EMBEDDED_API_KEY.trim()) showBanner();
 });
 
 // ════════════════════════════════════
