@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YT Clinic — Clinical Report Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f4f0;--surface:#fff;--surface2:#f0eeea;--border:#d8d5ce;
+  --border-strong:#b0ada5;--text:#1a1917;--text-muted:#6b6860;--text-faint:#9e9b94;
+  --accent:#1a4d8f;--warn:#7c4a00;--warn-light:#fff3e0;
+  --danger:#8b1a1a;--danger-light:#fdecea;--ok:#1a5c2e;--ok-light:#eaf4ed;
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+
+/* TOP NAV */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--text);color:#fff;
+  display:flex;align-items:center;height:52px;padding:0 24px;border-bottom:1px solid rgba(255,255,255,.08)}
+.nav-brand{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:rgba(255,255,255,.9);margin-right:28px;white-space:nowrap}
+.nav-brand span{color:rgba(255,255,255,.35);margin:0 5px}
+.dropdown{position:relative}
+.dropdown-btn{display:flex;align-items:center;gap:7px;padding:0 14px;height:52px;
+  background:transparent;border:none;color:rgba(255,255,255,.65);font-family:var(--sans);
+  font-size:13px;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.dropdown-btn:hover,.dropdown-btn.on{color:#fff;border-bottom-color:rgba(255,255,255,.45)}
+.dropdown-btn .chev{font-size:9px;opacity:.5;transition:transform .2s}
+.dropdown.open .dropdown-btn .chev{transform:rotate(180deg)}
+.dropdown-menu{display:none;position:absolute;top:52px;left:0;background:#fff;border:1px solid var(--border);
+  border-radius:6px;min-width:300px;box-shadow:0 8px 28px rgba(0,0,0,.13);overflow:hidden;z-index:300}
+.dropdown.open .dropdown-menu{display:block}
+.dmitem{display:flex;align-items:flex-start;gap:11px;padding:13px 16px;cursor:pointer;
+  transition:background .12s;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text)}
+.dmitem:last-child{border-bottom:none}
+.dmitem:hover{background:var(--surface2)}
+.dmitem.dim{opacity:.42;cursor:default}
+.dmitem.dim:hover{background:transparent}
+.di-num{font-family:var(--mono);font-size:10px;color:var(--text-faint);margin-top:1px;min-width:18px}
+.di-info{flex:1}
+.di-title{font-size:13px;font-weight:500}
+.di-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
+.di-badge{font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:2px;margin-top:4px;display:inline-block}
+.di-badge.av{background:var(--ok-light);color:var(--ok)}
+.di-badge.sn{background:var(--surface2);color:var(--text-faint)}
+.nav-home{margin-left:auto;display:flex;align-items:center;gap:5px;padding:5px 12px;
+  border:1px solid rgba(255,255,255,.18);border-radius:3px;background:transparent;
+  color:rgba(255,255,255,.65);font-family:var(--mono);font-size:10px;cursor:pointer;
+  letter-spacing:.06em;transition:all .15s}
+.nav-home:hover{background:rgba(255,255,255,.08);color:#fff}
+
+/* PAGES */
+.page{display:none;min-height:100vh;padding-top:52px}
+.page.visible{display:block}
+
+/* COVER */
+.cover{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:calc(100vh - 52px);padding:60px 24px;text-align:center}
+.cover-eye{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--text-faint);
+  text-transform:uppercase;margin-bottom:18px}
+.cover h1{font-size:40px;font-weight:300;line-height:1.15;margin-bottom:10px;letter-spacing:-.01em}
+.cover h1 strong{font-weight:500}
+.cover-sub{font-size:15px;color:var(--text-muted);margin-bottom:44px;max-width:440px;line-height:1.65}
+.tool-cards{display:grid;grid-template-columns:repeat(3,220px);gap:14px;margin-bottom:44px}
+.tc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px 20px 16px;
+  text-align:left;cursor:pointer;transition:all .15s}
+.tc:hover{border-color:var(--border-strong);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.07)}
+.tc.dim{opacity:.48;cursor:default}
+.tc.dim:hover{transform:none;box-shadow:none}
+.tc-tag{font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:2px 7px;border-radius:2px;display:inline-block;margin-bottom:10px}
+.tc-tag.av{background:var(--ok-light);color:var(--ok)}
+.tc-tag.sn{background:var(--surface2);color:var(--text-faint)}
+.tc-num{font-family:var(--mono);font-size:10px;color:var(--text-faint);margin-bottom:5px}
+.tc-title{font-size:13px;font-weight:500;margin-bottom:4px}
+.tc-desc{font-size:11px;color:var(--text-muted);line-height:1.55}
+.tc-arr{display:flex;justify-content:flex-end;margin-top:12px;font-size:13px;color:var(--text-faint)}
+.cover-ft{font-family:var(--mono);font-size:10px;color:var(--text-faint);letter-spacing:.06em}
+
+/* TOOL LAYOUT */
+.tool-layout{display:grid;grid-template-columns:244px 1fr;min-height:calc(100vh - 52px)}
+.sidebar{background:var(--text);color:#fff;position:sticky;top:52px;height:calc(100vh - 52px);
+  overflow-y:auto;display:flex;flex-direction:column}
+.sb-head{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sb-label{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:rgba(255,255,255,.32);
+  text-transform:uppercase;margin-bottom:4px}
+.sb-title{font-size:14px;font-weight:500;line-height:1.3;color:#fff}
+.sb-title span{display:block;font-size:10px;font-weight:300;color:rgba(255,255,255,.42);margin-top:2px}
+.nav-list{padding:8px 0;flex:1}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 18px;cursor:pointer;
+  transition:background .12s;border-left:2px solid transparent;font-size:12px;color:rgba(255,255,255,.52)}
+.nav-item:hover{background:rgba(255,255,255,.05);color:#fff}
+.nav-item.active{background:rgba(255,255,255,.08);border-left-color:#fff;color:#fff}
+.ndot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18);flex-shrink:0;margin-left:auto}
+.ndot.ok{background:#4ade80}.ndot.warn{background:#fbbf24}.ndot.danger{background:#f87171}
+.sb-foot{padding:12px 14px;border-top:1px solid rgba(255,255,255,.1)}
+.btn-gen{width:100%;padding:10px;background:#fff;color:var(--text);border:none;border-radius:4px;
+  font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;cursor:pointer;
+  transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:7px}
+.btn-gen:hover{opacity:.88}
+.btn-gen:disabled{opacity:.32;cursor:not-allowed}
+.btn-clr{width:100%;padding:7px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.55);
+  border:1px solid rgba(255,255,255,.1);border-radius:4px;font-family:var(--mono);font-size:10px;
+  letter-spacing:.06em;cursor:pointer;transition:all .12s}
+.btn-clr:hover{background:rgba(255,255,255,.13);color:#fff}
+.main-content{padding:26px 30px;overflow-y:auto}
+
+/* PATIENT BAR */
+.pt-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:22px;
+  padding:13px 16px;background:var(--surface);border:1px solid var(--border);border-radius:6px}
+.pt-field label{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+  color:var(--text-faint);text-transform:uppercase;margin-bottom:4px}
+.pt-field input,.pt-field select{width:100%;height:29px;font-family:var(--sans);font-size:12px;
+  padding:0 7px;background:var(--bg);border:1px solid var(--border);border-radius:3px;color:var(--text);outline:none}
+.pt-field input:focus,.pt-field select:focus{border-color:var(--accent);background:#fff}
+
+/* SECTIONS */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:6px;
+  margin-bottom:10px;overflow:hidden;scroll-margin-top:14px}
+.sec-head{display:flex;align-items:center;gap:10px;padding:11px 15px;cursor:pointer;
+  background:var(--surface2);border-bottom:1px solid transparent;user-select:none;transition:background .12s}
+.sec-head:hover{background:#e8e6e0}
+.section.open .sec-head{border-bottom-color:var(--border)}
+.sec-num{font-family:var(--mono);font-size:9px;color:var(--text-faint);min-width:16px}
+.sec-title{font-size:13px;font-weight:500;flex:1}
+.sec-sub{font-size:11px;color:var(--text-muted);margin-left:3px;font-weight:300}
+.sec-status{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:2px;letter-spacing:.05em}
+.sec-status.normal{background:var(--ok-light);color:var(--ok)}
+.sec-status.abnormal{background:var(--danger-light);color:var(--danger)}
+.sec-status.partial{background:var(--warn-light);color:var(--warn)}
+.sec-chev{font-size:10px;color:var(--text-faint);transition:transform .2s}
+.section.open .sec-chev{transform:rotate(180deg)}
+.sec-body{padding:15px;display:none}
+.section.open .sec-body{display:block}
+
+/* TAGS */
+.fl{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--text-faint);
+  text-transform:uppercase;margin-bottom:7px}
+.fg{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px}
+.ftag{font-size:12px;padding:4px 10px;border-radius:3px;border:1px solid var(--border);
+  color:var(--text-muted);cursor:pointer;background:var(--bg);transition:all .1s;line-height:1}
+.ftag:hover{border-color:var(--border-strong);color:var(--text)}
+.ftag.sel-ok{background:var(--ok-light);color:var(--ok);border-color:#a8d5b5}
+.ftag.sel-warn{background:var(--warn-light);color:var(--warn);border-color:#f0c070}
+.ftag.sel-danger{background:var(--danger-light);color:var(--danger);border-color:#e8aaaa}
+.subsect{margin-bottom:11px}
+.subsect+.subsect{padding-top:11px;border-top:1px solid var(--border)}
+.ot-field{margin-top:6px}
+.ot-field label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--text-faint);
+  text-transform:uppercase;display:block;margin-bottom:5px}
+.ot-field textarea{width:100%;font-family:var(--sans);font-size:12px;padding:6px 8px;
+  background:var(--bg);border:1px solid var(--border);border-radius:3px;color:var(--text);
+  resize:vertical;min-height:48px;outline:none;line-height:1.5}
+.ot-field textarea:focus{border-color:var(--accent);background:#fff}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.col-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--text-muted);
+  text-transform:uppercase;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+
+/* IMT SPECIFIC */
+.imt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.imt-box{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:10px 12px}
+.imt-box label{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+  color:var(--text-faint);text-transform:uppercase;margin-bottom:5px}
+.imt-input-wrap{display:flex;align-items:center;gap:5px}
+.imt-input-wrap input{flex:1;height:32px;font-family:var(--mono);font-size:15px;font-weight:500;
+  padding:0 7px;background:var(--surface);border:1px solid var(--border);border-radius:3px;
+  color:var(--text);outline:none;text-align:center}
+.imt-input-wrap input:focus{border-color:var(--accent);background:#fff}
+.imt-unit{font-family:var(--mono);font-size:10px;color:var(--text-faint)}
+.imt-indicator{height:3px;border-radius:2px;margin-top:7px;background:var(--border);transition:background .3s}
+.imt-indicator.ok{background:#22c55e}
+.imt-indicator.warn{background:#f59e0b}
+.imt-indicator.danger{background:#ef4444}
+.imt-hint{font-family:var(--mono);font-size:9px;color:var(--text-faint);margin-top:4px}
+.imt-legend{display:flex;gap:14px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:5px;margin-bottom:14px;align-items:center}
+.imt-leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)}
+.imt-dot{width:8px;height:8px;border-radius:50%}
+.imt-summary-bar{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;border-radius:5px;margin-bottom:14px;border:1px solid var(--border);
+  background:var(--surface)}
+.imt-summary-val{font-family:var(--mono);font-size:22px;font-weight:500}
+.imt-summary-label{font-size:11px;color:var(--text-muted);margin-top:2px}
+.imt-summary-badge{font-family:var(--mono);font-size:11px;padding:4px 12px;border-radius:3px}
+
+/* TI-RADS nodule */
+.nodule-tabs{display:flex;gap:5px;margin-bottom:11px;flex-wrap:wrap}
+.nodule-tab{padding:5px 12px;border:1px solid var(--border);border-radius:3px;font-size:12px;
+  cursor:pointer;background:var(--bg);color:var(--text-muted);font-family:var(--mono);
+  letter-spacing:.04em;transition:all .12s}
+.nodule-tab.active{background:var(--text);color:#fff;border-color:var(--text)}
+.btn-add-nod{padding:5px 10px;border:1px dashed var(--border-strong);border-radius:3px;font-size:11px;
+  cursor:pointer;background:transparent;color:var(--text-muted);font-family:var(--mono);
+  letter-spacing:.04em;transition:all .12s}
+.btn-add-nod:hover{border-color:var(--text);color:var(--text)}
+.nodule-panel{display:none}
+.nodule-panel.active{display:block}
+.ti-score-bar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:10px 0 13px;
+  padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:4px}
+.sc-box{display:flex;flex-direction:column;align-items:center;min-width:56px;padding:6px 8px;
+  background:var(--surface);border:1px solid var(--border);border-radius:4px}
+.sc-box .sl{font-family:var(--mono);font-size:8px;color:var(--text-faint);letter-spacing:.08em;margin-bottom:2px}
+.sc-box .sv{font-family:var(--mono);font-size:17px;font-weight:500;color:var(--text)}
+.sc-box.hl{border-color:var(--accent);background:#f0f4fb}
+.sc-box.hl .sv{color:var(--accent)}
+.ti-cat-info{flex:1;min-width:100px}
+.ti-cat-info .tl{font-size:13px;font-weight:500}
+.ti-cat-info .td{font-size:11px;color:var(--text-muted);margin-top:2px}
+
+/* REPORT OUTPUT */
+.report-out{display:none;margin-top:13px;background:var(--surface);border:1px solid var(--border);
+  border-radius:6px;overflow:hidden}
+.report-out.vis{display:block}
+.rep-head{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;
+  background:var(--text);color:#fff}
+.rep-head span{font-family:var(--mono);font-size:10px;letter-spacing:.08em}
+.btn-copy{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18);
+  border-radius:3px;font-family:var(--mono);font-size:9px;padding:3px 9px;cursor:pointer;
+  letter-spacing:.06em;transition:background .12s}
+.btn-copy:hover{background:rgba(255,255,255,.22)}
+.rep-content{padding:16px 18px;font-family:var(--mono);font-size:12px;line-height:1.9;
+  color:var(--text);white-space:pre-wrap;min-height:60px}
+.spinner{display:inline-block;width:11px;height:11px;border:2px solid rgba(0,0,0,.12);
+  border-top-color:var(--text);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PLAQUE TABLE */
+.plaque-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:11px}
+.plaque-table th{background:var(--surface2);font-family:var(--mono);font-size:9px;letter-spacing:.08em;
+  color:var(--text-faint);text-transform:uppercase;padding:6px 10px;text-align:left;
+  border:1px solid var(--border);font-weight:400}
+.plaque-table td{padding:6px 8px;border:1px solid var(--border);vertical-align:middle}
+.plaque-table select,.plaque-table input[type=text]{width:100%;font-family:var(--sans);font-size:11px;
+  padding:3px 5px;background:var(--bg);border:1px solid var(--border);border-radius:2px;
+  color:var(--text);outline:none;height:26px}
+.plaque-table select:focus,.plaque-table input[type=text]:focus{border-color:var(--accent);background:#fff}
+.btn-row-add{padding:4px 10px;border:1px dashed var(--border-strong);border-radius:3px;font-size:11px;
+  cursor:pointer;background:transparent;color:var(--text-muted);font-family:var(--mono);
+  letter-spacing:.04em;transition:all .12s;margin-top:5px}
+.btn-row-add:hover{border-color:var(--text);color:var(--text)}
+.btn-row-del{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:14px;padding:0 3px}
+.btn-row-del:hover{color:var(--danger)}
+
+/* ── CERT TOOL ── */
+.cert-field-wrap{position:relative;margin-bottom:14px}
+.cert-field-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--text-faint);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.cert-textarea{width:100%;font-family:var(--sans);font-size:13px;line-height:1.8;padding:10px 12px;background:#fff;border:1px solid var(--border);border-radius:4px;color:var(--text);resize:vertical;min-height:120px;outline:none;transition:border-color .15s}
+.cert-textarea:focus{border-color:var(--accent)}
+.cert-copy-btn{background:var(--surface2);border:1px solid var(--border);border-radius:3px;font-family:var(--mono);font-size:9px;color:var(--text-muted);padding:3px 9px;cursor:pointer;letter-spacing:.05em;transition:all .12s}
+.cert-copy-btn:hover{background:var(--border);color:var(--text)}
+.cert-phrase-group{margin-bottom:14px}
+.cert-phrase-group-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--text-faint);text-transform:uppercase;margin-bottom:6px}
+.cert-phrases{display:flex;flex-wrap:wrap;gap:5px}
+.cert-phrase{font-size:12px;padding:4px 11px;border-radius:3px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:var(--bg);transition:all .12s;line-height:1;user-select:none}
+.cert-phrase:hover{border-color:var(--accent);color:var(--accent);background:#f0f4fb}
+.cert-phrase.sel{background:var(--ok-light);color:var(--ok);border-color:#a8d5b5}
+.cert-date-inline{display:inline-flex;align-items:center;gap:3px;font-family:var(--sans);font-size:13px;color:var(--text-muted)}
+.cert-date-inline input{width:52px;height:24px;font-family:var(--mono);font-size:12px;text-align:center;padding:0 4px;border:none;border-bottom:1px solid var(--border);background:transparent;color:var(--text);outline:none}
+.cert-date-inline input:focus{border-bottom-color:var(--accent)}
+.cert-pretext{font-size:12px;color:var(--text-muted);padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;margin-bottom:10px;line-height:1.7}
+/* DEPLOY BANNER */
+.deploy-banner{position:fixed;top:52px;left:0;right:0;z-index:190;
+  background:#7c3a00;color:#fff;padding:10px 20px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.04em;display:flex;align-items:center;gap:12px;line-height:1.6;
+  border-bottom:1px solid rgba(255,255,255,.1)}
+.deploy-banner.hidden{display:none}
+.deploy-banner strong{color:#ffd080}
+.deploy-banner .dbtn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);
+  color:#fff;border-radius:3px;padding:4px 11px;cursor:pointer;font-family:var(--mono);
+  font-size:10px;white-space:nowrap;transition:background .12s}
+.deploy-banner .dbtn:hover{background:rgba(255,255,255,.25)}
+.deploy-banner .dclose{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.5);
+  cursor:pointer;font-size:16px;line-height:1;padding:0 4px}
+.deploy-banner .dclose:hover{color:#fff}
+</style>
+</head>
+<body>
+
+<!-- ══ TOP NAV ══ -->
+<nav class="topnav">
+  <div class="nav-brand">YT Clinic <span>/</span> Clinical Tools</div>
+  <div class="dropdown" id="dd">
+    <button class="dropdown-btn" onclick="toggleDD()">Tools <span class="chev">▾</span></button>
+    <div class="dropdown-menu">
+      <div class="dmitem" onclick="showTool('abd')">
+        <span class="di-num">01</span>
+        <div class="di-info"><div class="di-title">Abdominal Ultrasound</div><div class="di-sub">腹部超音波結構化報告</div><span class="di-badge av">AVAILABLE</span></div>
+      </div>
+      <div class="dmitem" onclick="showTool('thy')">
+        <span class="di-num">02</span>
+        <div class="di-info"><div class="di-title">Thyroid Ultrasound (TI-RADS)</div><div class="di-sub">甲狀腺超音波 TI-RADS 報告</div><span class="di-badge av">AVAILABLE</span></div>
+      </div>
+      <div class="dmitem" onclick="showTool('car')">
+        <span class="di-num">03</span>
+        <div class="di-info"><div class="di-title">Carotid Ultrasound</div><div class="di-sub">頸動脈超音波 IMT 報告</div><span class="di-badge av">AVAILABLE</span></div>
+      </div>
+      <div class="dmitem" onclick="showTool('opd')">
+        <span class="di-num">04</span>
+        <div class="di-info"><div class="di-title">OPD Structured Note</div><div class="di-sub">門診病歷結構化 S·O·P</div><span class="di-badge av">AVAILABLE</span></div>
+      </div>
+      <div class="dmitem" onclick="showTool('cert')">
+        <span class="di-num">05</span>
+        <div class="di-info"><div class="di-title">診斷書結構化</div><div class="di-sub">Medical Certificate · 診斷 · 醫囑</div><span class="di-badge av">AVAILABLE</span></div>
+      </div>
+    </div>
+  </div>
+  <button class="nav-home" onclick="showCover()">⌂ HOME</button>
+</nav>
+
+<!-- Deploy banner — shown when API key is missing (file:// context) -->
+<div class="deploy-banner hidden" id="deploy-banner">
+  <span>⚠ <strong>AI 報告功能需要部署到網頁伺服器才能使用。</strong>
+  建議免費方案：拖曳 HTML 到 <strong>drop.netlify.com</strong> → 立即取得永久網址，書籤後隨時使用。</span>
+  <button class="dbtn" onclick="window.open('https://drop.netlify.com','_blank')">開啟 Netlify Drop ↗</button>
+  <button class="dclose" onclick="closeBanner()">✕</button>
+</div>
+
+<!-- ══ COVER ══ -->
+<div class="page visible" id="page-cover">
+  <div class="cover">
+    <div class="cover-eye">YT Clinic · Kaohsiung · Gastroenterology &amp; Hepatology</div>
+    <h1><strong>Clinical Report</strong><br>Hub</h1>
+    <p class="cover-sub">結構化病歷工具集 — 快速產生標準化醫療報告，整合 AI 輔助結論生成</p>
+    <div class="tool-cards">
+      <div class="tc" onclick="showTool('abd')">
+        <span class="tc-tag av">AVAILABLE</span><div class="tc-num">01</div>
+        <div class="tc-title">Abdominal Ultrasound</div>
+        <div class="tc-desc">腹部超音波結構化報告<br>Liver · GB · Pancreas · Spleen · Kidneys</div>
+        <div class="tc-arr">→</div>
+      </div>
+      <div class="tc" onclick="showTool('thy')">
+        <span class="tc-tag av">AVAILABLE</span><div class="tc-num">02</div>
+        <div class="tc-title">Thyroid Ultrasound</div>
+        <div class="tc-desc">甲狀腺超音波 TI-RADS 報告<br>ACR TI-RADS scoring · Nodule characterization</div>
+        <div class="tc-arr">→</div>
+      </div>
+      <div class="tc" onclick="showTool('car')">
+        <span class="tc-tag av">AVAILABLE</span><div class="tc-num">03</div>
+        <div class="tc-title">Carotid Ultrasound</div>
+        <div class="tc-desc">頸動脈超音波 IMT 報告<br>IMT measurement · Plaque characterization</div>
+        <div class="tc-arr">→</div>
+      </div>
+      <div class="tc" onclick="showTool('opd')">
+        <span class="tc-tag av">AVAILABLE</span><div class="tc-num">04</div>
+        <div class="tc-title">OPD Structured Note</div>
+        <div class="tc-desc">門診病歷結構化 S·O·P<br>Subjective · Objective · Plan</div>
+        <div class="tc-arr">→</div>
+      </div>
+      <div class="tc" onclick="showTool('cert')">
+        <span class="tc-tag av">AVAILABLE</span><div class="tc-num">05</div>
+        <div class="tc-title">診斷書結構化</div>
+        <div class="tc-desc">Medical Certificate<br>診斷 · 醫囑 · 快速片語帶入</div>
+        <div class="tc-arr">→</div>
+      </div>
+    </div>
+    <div class="cover-ft">AI-POWERED · STRUCTURED REPORTS · CLAUDE API</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     TOOL 01 — ABDOMINAL ULTRASOUND
+══════════════════════════════════ -->
+<div class="page" id="page-abd">
+<div class="tool-layout">
+  <aside class="sidebar">
+    <div class="sb-head"><div class="sb-label">Tool 01</div><div class="sb-title">Abdominal US <span>腹部超音波報告</span></div></div>
+    <nav class="nav-list">
+      <div class="nav-item" onclick="abdScroll('liver')"><span>01</span> Liver <div class="ndot ok" id="and-liver"></div></div>
+      <div class="nav-item" onclick="abdScroll('gb')"><span>02</span> Gallbladder &amp; Bile Duct <div class="ndot ok" id="and-gb"></div></div>
+      <div class="nav-item" onclick="abdScroll('pan')"><span>03</span> Pancreas <div class="ndot ok" id="and-pan"></div></div>
+      <div class="nav-item" onclick="abdScroll('spl')"><span>04</span> Spleen <div class="ndot ok" id="and-spl"></div></div>
+      <div class="nav-item" onclick="abdScroll('kid')"><span>05</span> Kidneys <div class="ndot ok" id="and-kid"></div></div>
+      <div class="nav-item" onclick="abdScroll('aoth')"><span>06</span> Others <div class="ndot ok" id="and-aoth"></div></div>
+    </nav>
+    <div class="sb-foot">
+      <button class="btn-gen" id="abd-gbtn" onclick="abdGenerate()"><span id="abd-bi">▶</span><span id="abd-bt">GENERATE REPORT</span></button>
+      <button class="btn-clr" onclick="abdClear()">✕ CLEAR ALL</button>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="pt-bar">
+      <div class="pt-field"><label>Patient Name</label><input type="text" id="abd-n"></div>
+      <div class="pt-field"><label>Chart No.</label><input type="text" id="abd-id"></div>
+      <div class="pt-field"><label>Exam Date</label><input type="date" id="abd-d"></div>
+      <div class="pt-field"><label>Physician</label><input type="text" id="abd-doc"></div>
+    </div>
+    <!-- LIVER -->
+    <div class="section open" id="asec-liver">
+      <div class="sec-head" onclick="tSec('asec-liver')"><span class="sec-num">01</span><span class="sec-title">Liver <span class="sec-sub">肝臟</span></span><span class="sec-status normal" id="ast-liver">NORMAL</span><span class="sec-chev">▾</span></div>
+      <div class="sec-body">
+        <div class="subsect"><div class="fl">Size &amp; Echotexture</div><div class="fg">
+          <span class="ftag sel-ok" data-val="normal size" data-lvl="ok" onclick="aTag(this,'liver')">Normal size</span>
+          <span class="ftag" data-val="mildly enlarged" data-lvl="warn" onclick="aTag(this,'liver')">Mildly enlarged</span>
+          <span class="ftag" data-val="enlarged" data-lvl="warn" onclick="aTag(this,'liver')">Enlarged</span>
+          <span class="ftag" data-val="small/atrophic liver" data-lvl="warn" onclick="aTag(this,'liver')">Small/Atrophic</span>
+          <span class="ftag sel-ok" data-val="homogeneous echotexture" data-lvl="ok" onclick="aTag(this,'liver')">Homogeneous echo</span>
+          <span class="ftag" data-val="grade 1 fatty liver (mildly increased echogenicity)" data-lvl="warn" onclick="aTag(this,'liver')">Fatty liver Gr.1</span>
+          <span class="ftag" data-val="grade 2 fatty liver (moderately increased echogenicity)" data-lvl="warn" onclick="aTag(this,'liver')">Fatty liver Gr.2</span>
+          <span class="ftag" data-val="grade 3 fatty liver (markedly increased echogenicity)" data-lvl="danger" onclick="aTag(this,'liver')">Fatty liver Gr.3</span>
+          <span class="ftag" data-val="cirrhotic change with heterogeneous echotexture and irregular surface" data-lvl="danger" onclick="aTag(this,'liver')">Cirrhotic change</span>
+          <span class="ftag" data-val="coarsened echotexture" data-lvl="warn" onclick="aTag(this,'liver')">Coarsened echo</span>
+        </div></div>
+        <div class="subsect"><div class="fl">Lesions</div><div class="fg">
+          <span class="ftag sel-ok" data-val="no focal lesion" data-lvl="ok" onclick="aTag(this,'liver')">No focal lesion</span>
+          <span class="ftag" data-val="simple hepatic cyst" data-lvl="ok" onclick="aTag(this,'liver')">Simple cyst</span>
+          <span class="ftag" data-val="hepatic hemangioma" data-lvl="ok" onclick="aTag(this,'liver')">Hemangioma</span>
+          <span class="ftag" data-val="hyperechoic nodule (likely hemangioma)" data-lvl="warn" onclick="aTag(this,'liver')">Hyperechoic nodule</span>
+          <span class="ftag" data-val="hypoechoic nodule (further evaluation recommended)" data-lvl="danger" onclick="aTag(this,'liver')">Hypoechoic nodule</span>
+          <span class="ftag" data-val="mixed echogenicity mass (suspicious for malignancy)" data-lvl="danger" onclick="aTag(this,'liver')">Mixed echo mass</span>
+          <span class="ftag" data-val="hepatic calcification" data-lvl="warn" onclick="aTag(this,'liver')">Calcification</span>
+          <span class="ftag" data-val="portal vein thrombosis" data-lvl="danger" onclick="aTag(this,'liver')">PV thrombosis</span>
+        </div></div>
+        <div class="ot-field"><label>Other findings</label><textarea id="aot-liver" placeholder="e.g. 2.1cm hyperechoic nodule at S6..."></textarea></div>
+      </div>
+    </div>
+    <!-- GALLBLADDER -->
+    <div class="section open" id="asec-gb">
+      <div class="sec-head" onclick="tSec('asec-gb')"><span class="sec-num">02</span><span class="sec-title">Gallbladder &amp; Bile Duct <span class="sec-sub">膽囊與膽管</span></span><span class="sec-status normal" id="ast-gb">NORMAL</span><span class="sec-chev">▾</span></div>
+      <div class="sec-body">
+        <div class="subsect"><div class="fl">Gallbladder</div><div class="fg">
+          <span class="ftag sel-ok" data-val="gallbladder normal" data-lvl="ok" onclick="aTag(this,'gb')">Normal</span>
+          <span class="ftag" data-val="post-cholecystectomy (gallbladder absent)" data-lvl="ok" onclick="aTag(this,'gb')">Post-cholecystectomy</span>
+          <span class="ftag" data-val="gallbladder distension" data-lvl="warn" onclick="aTag(this,'gb')">Distended</span>
+          <span class="ftag" data-val="contracted gallbladder" data-lvl="warn" onclick="aTag(this,'gb')">Contracted</span>
+          <span class="ftag" data-val="gallbladder wall thickening" data-lvl="warn" onclick="aTag(this,'gb')">Wall thickening</span>
+          <span class="ftag" data-val="gallbladder sludge" data-lvl="warn" onclick="aTag(this,'gb')">Sludge</span>
+          <span class="ftag" data-val="cholelithiasis" data-lvl="warn" onclick="aTag(this,'gb')">Cholelithiasis</span>
+          <span class="ftag" data-val="gallbladder polyp &lt;5mm" data-lvl="ok" onclick="aTag(this,'gb')">Polyp &lt;5mm</span>
+          <span class="ftag" data-val="gallbladder polyp 5–9mm (surveillance recommended)" data-lvl="warn" onclick="aTag(this,'gb')">Polyp 5–9mm</span>
+          <span class="ftag" data-val="gallbladder polyp ≥10mm (surgical consultation recommended)" data-lvl="danger" onclick="aTag(this,'gb')">Polyp ≥10mm</span>
+          <span class="ftag" data-val="features of acute cholecystitis" data-lvl="danger" onclick="aTag(this,'gb')">Acute cholecystitis</span>
+          <span class="ftag" data-val="suspicious gallbladder mass" data-lvl="danger" onclick="aTag(this,'gb')">Suspicious mass</span>
+        </div></div>
+        <div class="subsect"><div class="fl">Bile Duct (CBD)</div><div class="fg">
+          <span class="ftag sel-ok" data-val="CBD within normal limits" data-lvl="ok" onclick="aTag(this,'gb')">CBD normal</span>
+          <span class="ftag" data-val="mildly dilated CBD" data-lvl="warn" onclick="aTag(this,'gb')">CBD mildly dilated</span>
+          <span class="ftag" data-val="dilated CBD (obstructive etiology suspected)" data-lvl="danger" onclick="aTag(this,'gb')">CBD dilated</span>
+          <span class="ftag" data-val="intrahepatic bile duct dilatation" data-lvl="danger" onclick="aTag(this,'gb')">IHBD dilatation</span>
+          <span class="ftag" data-val="choledocholithiasis" data-lvl="danger" onclick="aTag(this,'gb')">Choledocholithiasis</span>
+        </div></div>
+        <div class="ot-field"><label>Other findings</label><textarea id="aot-gb" placeholder="e.g. CBD 8mm with distal stone..."></textarea></div>
+      </div>
+    </div>
+    <!-- PANCREAS -->
+    <div class="section open" id="asec-pan">
+      <div class="sec-head" onclick="tSec('asec-pan')"><span class="sec-num">03</span><span class="sec-title">Pancreas <span class="sec-sub">胰臟</span></span><span class="sec-status normal" id="ast-pan">NORMAL</span><span class="sec-chev">▾</span></div>
+      <div class="sec-body">
+        <div class="fg">
+          <span class="ftag sel-ok" data-val="pancreas unremarkable" data-lvl="ok" onclick="aTag(this,'pan')">Unremarkable</span>
+          <span class="ftag" data-val="pancreas partially obscured by overlying bowel gas" data-lvl="warn" onclick="aTag(this,'pan')">Partially obscured</span>
+          <span class="ftag" data-val="pancreas not well visualized due to bowel gas" data-lvl="warn" onclick="aTag(this,'pan')">Not well visualized</span>
+          <span class="ftag" data-val="pancreatic enlargement" data-lvl="warn" onclick="aTag(this,'pan')">Enlarged</span>
+          <span class="ftag" data-val="fatty infiltration of pancreas" data-lvl="warn" onclick="aTag(this,'pan')">Fatty infiltration</span>
+          <span class="ftag" data-val="main pancreatic duct dilatation" data-lvl="danger" onclick="aTag(this,'pan')">MPD dilatation</span>
+          <span class="ftag" data-val="pancreatic cystic lesion" data-lvl="warn" onclick="aTag(this,'pan')">Cystic lesion</span>
+          <span class="ftag" data-val="pancreatic solid mass (malignancy cannot be excluded)" data-lvl="danger" onclick="aTag(this,'pan')">Solid mass</span>
+          <span class="ftag" data-val="pancreatic calcification (chronic pancreatitis pattern)" data-lvl="warn" onclick="aTag(this,'pan')">Calcification (CP)</span>
+          <span class="ftag" data-val="features of acute pancreatitis" data-lvl="danger" onclick="aTag(this,'pan')">Acute pancreatitis</span>
+        </div>
+        <div class="ot-field"><label>Other findings</label><textarea id="aot-pan" placeholder="e.g. 2.5cm hypoechoic mass at pancreatic head, MPD 5mm..."></textarea></div>
+      </div>
+    </div>
+    <!-- SPLEEN -->
+    <div class="section open" id="asec-spl">
+      <div class="sec-head" onclick="tSec('asec-spl')"><span class="sec-num">04</span><span class="sec-title">Spleen <span class="sec-sub">脾臟</span></span><span class="sec-status normal" id="ast-spl">NORMAL</span><span class="sec-chev">▾</span></div>
+      <div class="sec-body">
+        <div class="fg">
+          <span class="ftag sel-ok" data-val="spleen normal in size and echotexture" data-lvl="ok" onclick="aTag(this,'spl')">Normal</span>
+          <span class="ftag" data-val="mild splenomegaly" data-lvl="warn" onclick="aTag(this,'spl')">Mild splenomegaly</span>
+          <span class="ftag" data-val="splenomegaly" data-lvl="warn" onclick="aTag(this,'spl')">Splenomegaly</span>
+          <span class="ftag" data-val="accessory spleen" data-lvl="ok" onclick="aTag(this,'spl')">Accessory spleen</span>
+          <span class="ftag" data-val="splenic cyst" data-lvl="ok" onclick="aTag(this,'spl')">Splenic cyst</span>
+          <span class="ftag" data-val="splenic calcification" data-lvl="ok" onclick="aTag(this,'spl')">Calcification</span>
+          <span class="ftag" data-val="splenic focal lesion" data-lvl="danger" onclick="aTag(this,'spl')">Focal lesion</span>
+          <span class="ftag" data-val="splenic infarction" data-lvl="danger" onclick="aTag(this,'spl')">Infarction</span>
+        </div>
+        <div class="ot-field"><label>Other findings</label><textarea id="aot-spl" placeholder="e.g. Spleen 14cm, homogeneous..."></textarea></div>
+      </div>
+    </div>
+    <!-- KIDNEYS -->
+    <div class="section open" id="asec-kid">
+      <div class="sec-head" onclick="tSec('asec-kid')"><span class="sec-num">05</span><span class="sec-title">Kidneys <span class="sec-sub">腎臟</span></span><span class="sec-status normal" id="ast-kid">NORMAL</span><span class="sec-chev">▾</span></div>
+      <div class="sec-body">
+        <div class="two-col">
+          <div><div class="col-label">Left Kidney</div><div class="fg">
+            <span class="ftag sel-ok" data-val="left kidney unremarkable" data-lvl="ok" onclick="aTag(this,'kid')">Unremarkable</span>
+            <span class="ftag" data-val="left renal cyst" data-lvl="ok" onclick="aTag(this,'kid')">Renal cyst</span>
+            <span class="ftag" data-val="left nephrolithiasis" data-lvl="warn" onclick="aTag(this,'kid')">Nephrolithiasis</span>
+            <span class="ftag" data-val="left hydronephrosis" data-lvl="warn" onclick="aTag(this,'kid')">Hydronephrosis</span>
+            <span class="ftag" data-val="left renal mass" data-lvl="danger" onclick="aTag(this,'kid')">Renal mass</span>
+            <span class="ftag" data-val="left kidney small (chronic renal disease)" data-lvl="warn" onclick="aTag(this,'kid')">Small kidney</span>
+          </div></div>
+          <div><div class="col-label">Right Kidney</div><div class="fg">
+            <span class="ftag sel-ok" data-val="right kidney unremarkable" data-lvl="ok" onclick="aTag(this,'kid')">Unremarkable</span>
+            <span class="ftag" data-val="right renal cyst" data-lvl="ok" onclick="aTag(this,'kid')">Renal cyst</span>
+            <span class="ftag" data-val="right nephrolithiasis" data-lvl="warn" onclick="aTag(this,'kid')">Nephrolithiasis</span>
+            <span class="ftag" data-val="right hydronephrosis" data-lvl="warn" onclick="aTag(this,'kid')">Hydronephrosis</span>
+            <span class="ftag" data-val="right renal mass" data-lvl="danger" onclick="aTag(this,'kid')">Renal mass</span>
+            <span class="ftag" data-val="right kidney small (chronic renal disease)" data-lvl="warn" onclick="aTag(this,'kid')">Small kidney</span>
+          </div></div>
+        </div>
+        <div class="ot-field" style="margin-top:10px"><label>Other findings</label><textarea id="aot-kid" placeholder="e.g. bilateral small renal cysts..."></textarea></div>
+      </div>
+    </div>
+    <!-- OTHERS -->
+    <div class="section open" id="asec-aoth">
+      <div class="sec-head" onclick="tSec('asec-aoth')"><span class="sec-num">06</span><span class="sec-title">Others <span class="sec-sub">其他發現</span></span><span class="sec-status normal" id="ast-aoth">NORMAL</span><span class="sec-chev">▾</span></div>
+      <div class="sec-body">
+        <div class="fg">
+          <span class="ftag sel-ok" data-val="no ascites" data-lvl="ok" onclick="aTag(this,'aoth')">No ascites</span>
+          <span class="ftag" data-val="small amount of ascites" data-lvl="warn" onclick="aTag(this,'aoth')">Small ascites</span>
+          <span class="ftag" data-val="moderate to large ascites" data-lvl="danger" onclick="aTag(this,'aoth')">Moderate/large ascites</span>
+          <span class="ftag sel-ok" data-val="aorta normal caliber" data-lvl="ok" onclick="aTag(this,'aoth')">Aorta normal</span>
+          <span class="ftag" data-val="abdominal aortic aneurysm" data-lvl="danger" onclick="aTag(this,'aoth')">AAA</span>
+          <span class="ftag" data-val="retroperitoneal lymphadenopathy" data-lvl="danger" onclick="aTag(this,'aoth')">Lymphadenopathy</span>
+          <span class="ftag" data-val="limited study due to overlying bowel gas" data-lvl="warn" onclick="aTag(this,'aoth')">Limited (gas)</span>
+          <span class="ftag" data-val="limited study due to body habitus" data-lvl="warn" onclick="aTag(this,'aoth')">Limited (habitus)</span>
+        </div>
+        <div class="ot-field"><label>Other findings</label><textarea id="aot-aoth" placeholder="e.g. small perihepatic ascites..."></textarea></div>
+      </div>
+    </div>
+    <div class="report-out" id="abd-rpt"><div class="rep-head"><span>ABDOMINAL ULTRASOUND REPORT</span><button class="btn-copy" onclick="copyRpt('abd-rtxt')">⧉ COPY</button></div><div class="rep-content" id="abd-rtxt"></div></div>
+  </main>
+</div>
+</div>
+
+<!-- ══════════════════════════════════
+     TOOL 02 — THYROID (TI-RADS)
+══════════════════════════════════ -->
+<div class="page" id="page-thy">
+<div class="tool-layout">
+  <aside class="sidebar">
+    <div class="sb-head"><div class="sb-label">Tool 02</div><div class="sb-title">Thyroid US <span>甲狀腺 TI-RADS</span></div></div>
+    <nav class="nav-list">
+      <div class="nav-item" onclick="thyScroll('gland')"><span>01</span> Thyroid Gland <div class="ndot ok" id="tnd-gland"></div></div>
+      <div class="nav-item" onclick="thyScroll('nod')"><span>02</span> Nodule Scoring <div class="ndot ok" id="tnd-nod"></div></div>
+      <div class="nav-item" onclick="thyScroll('lymph')"><span>03</span> Lymph Nodes <div class="ndot ok" id="tnd-lymph"></div></div>
+    </nav>
+    <div class="sb-foot">
+      <button class="btn-gen" id="thy-gbtn" onclick="thyGenerate()"><span id="thy-bi">▶</span><span id="thy-bt">GENERATE REPORT</span></button>
+      <button class="btn-clr" onclick="thyClear()">✕ CLEAR ALL</button>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="pt-bar">
+      <div class="pt-field"><label>Patient Name</label><input type="text" id="thy-n"></div>
+      <div class="pt-field"><label>Chart No.</label><input type="text" id="thy-id"></div>
+      <div class="pt-field"><label>Exam Date</label><input type="date" id="thy-d"></div>
+      <div class="pt-field"><label>Physician</label><input type="text" id="thy-doc"></div>
+    </div>
+    <!-- THYROID GLAND -->
+    <div class="section open" id="tsec-gland">
+      <div class="sec-head" onclick="tSec('tsec-gland')"><span class="sec-num">01</span><span class="sec-title">Thyroid Gland <span class="sec-sub">甲狀腺</span></span><span class="sec-status normal" id="tst-gland">NORMAL</span><span class="sec-chev">▾</span></div>
+      <div class="sec-body">
+        <div class="subsect"><div class="fl">Overall</div><div class="fg">
+          <span class="ftag sel-ok" data-val="thyroid gland normal in size and echogenicity" data-lvl="ok" data-org="gland" onclick="tTag(this)">Normal</span>
+          <span class="ftag" data-val="thyroid gland enlarged (goiter)" data-lvl="warn" data-org="gland" onclick="tTag(this)">Goiter</span>
+          <span class="ftag" data-val="thyroid gland small (atrophy)" data-lvl="warn" data-org="gland" onclick="tTag(this)">Atrophy</span>
+          <span class="ftag" data-val="post-thyroidectomy — thyroid bed unremarkable" data-lvl="ok" data-org="gland" onclick="tTag(this)">Post-thyroidectomy</span>
+        </div></div>
+        <div class="subsect"><div class="fl">Echogenicity &amp; Texture</div><div class="fg">
+          <span class="ftag sel-ok" data-val="normal echogenicity and homogeneous texture" data-lvl="ok" data-org="gland" onclick="tTag(this)">Normal echo</span>
+          <span class="ftag" data-val="diffusely decreased echogenicity" data-lvl="warn" data-org="gland" onclick="tTag(this)">Decreased echo</span>
+          <span class="ftag" data-val="heterogeneous echotexture" data-lvl="warn" data-org="gland" onclick="tTag(this)">Heterogeneous</span>
+          <span class="ftag" data-val="diffuse heterogeneity with increased vascularity (Hashimoto's thyroiditis pattern)" data-lvl="warn" data-org="gland" onclick="tTag(this)">Hashimoto pattern</span>
+          <span class="ftag" data-val="diffuse increased vascularity (Graves' disease pattern)" data-lvl="warn" data-org="gland" onclick="tTag(this)">Graves' pattern</span>
+        </div></div>
+        <div class="ot-field"><label>Other findings</label><textarea id="tot-gland" placeholder="e.g. bilateral thyroid lobes symmetric, isthmus 3mm..."></textarea></div>
+      </div>
+    </div>
+    <!-- NODULE SCORING -->
+    <div class="section open" id="tsec-nod">
+      <div class="sec-head" onclick="tSec('tsec-nod')"><span class="sec-num">02</span><span class="sec-title">Nodule Scoring <span class="sec-sub">結節 TI-RADS</span></span><span class="sec-status normal" id="tst-nod">NO NODULE</span><span class="sec-chev">▾</span></div>
+      <div class="sec-body">
+        <div class="fg" style="margin-bottom:12px">
+          <span class="ftag sel-ok" id="t-nonod" onclick="tNoNod()">No thyroid nodule</span>
+          <span class="ftag" id="t-hasnod" onclick="tHasNod()">Nodule(s) present</span>
+        </div>
+        <div id="t-nod-ws" style="display:none">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+            <div class="nodule-tabs" id="t-ntabs"></div>
+            <button class="btn-add-nod" onclick="tAddNod()">+ Add nodule</button>
+          </div>
+          <div id="t-npanels"></div>
+        </div>
+      </div>
+    </div>
+    <!-- LYMPH NODES -->
+    <div class="section open" id="tsec-lymph">
+      <div class="sec-head" onclick="tSec('tsec-lymph')"><span class="sec-num">03</span><span class="sec-title">Lymph Nodes <span class="sec-sub">頸部淋巴結</span></span><span class="sec-status normal" id="tst-lymph">NORMAL</span><span class="sec-chev">▾</span></div>
+      <div class="sec-body">
+        <div class="fg">
+          <span class="ftag sel-ok" data-val="no cervical lymphadenopathy" data-lvl="ok" data-org="lymph" onclick="tTag(this)">No lymphadenopathy</span>
+          <span class="ftag" data-val="reactive cervical lymph nodes" data-lvl="warn" data-org="lymph" onclick="tTag(this)">Reactive nodes</span>
+          <span class="ftag" data-val="enlarged cervical lymph nodes (short axis >10mm)" data-lvl="warn" data-org="lymph" onclick="tTag(this)">Enlarged nodes</span>
+          <span class="ftag" data-val="suspicious cervical lymph nodes (loss of fatty hilum, round shape)" data-lvl="danger" data-org="lymph" onclick="tTag(this)">Suspicious nodes</span>
+          <span class="ftag" data-val="lymph node calcification" data-lvl="danger" data-org="lymph" onclick="tTag(this)">Node calcification</span>
+          <span class="ftag" data-val="cystic changes in cervical lymph node" data-lvl="danger" data-org="lymph" onclick="tTag(this)">Cystic changes</span>
+        </div>
+        <div class="ot-field"><label>Other findings</label><textarea id="tot-lymph" placeholder="e.g. level III right cervical node 1.2cm..."></textarea></div>
+      </div>
+    </div>
+    <div class="report-out" id="thy-rpt"><div class="rep-head"><span>THYROID ULTRASOUND REPORT (TI-RADS)</span><button class="btn-copy" onclick="copyRpt('thy-rtxt')">⧉ COPY</button></div><div class="rep-content" id="thy-rtxt"></div></div>
+  </main>
+</div>
+</div>
+
+<!-- ══════════════════════════════════
+     TOOL 03 — CAROTID ULTRASOUND
+══════════════════════════════════ -->
+<div class="page" id="page-car">
+<div class="tool-layout">
+  <aside class="sidebar">
+    <div class="sb-head"><div class="sb-label">Tool 03</div><div class="sb-title">Carotid US <span>頸動脈超音波報告</span></div></div>
+    <nav class="nav-list">
+      <div class="nav-item" onclick="carScroll('imt')"><span>01</span> IMT Measurement <div class="ndot ok" id="cnd-imt"></div></div>
+      <div class="nav-item" onclick="carScroll('plaque')"><span>02</span> Plaque <div class="ndot ok" id="cnd-plaque"></div></div>
+      <div class="nav-item" onclick="carScroll('flow')"><span>03</span> Flow &amp; Stenosis <div class="ndot ok" id="cnd-flow"></div></div>
+      <div class="nav-item" onclick="carScroll('vert')"><span>04</span> Vertebral Arteries <div class="ndot ok" id="cnd-vert"></div></div>
+    </nav>
+    <div class="sb-foot">
+      <button class="btn-gen" id="car-gbtn" onclick="carGenerate()"><span id="car-bi">▶</span><span id="car-bt">GENERATE REPORT</span></button>
+      <button class="btn-clr" onclick="carClear()">✕ CLEAR ALL</button>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="pt-bar">
+      <div class="pt-field"><label>Patient Name</label><input type="text" id="car-n"></div>
+      <div class="pt-field"><label>Chart No.</label><input type="text" id="car-id"></div>
+      <div class="pt-field"><label>Exam Date</label><input type="date" id="car-d"></div>
+      <div class="pt-field"><label>Physician</label><input type="text" id="car-doc"></div>
+    </div>
+
+    <!-- IMT -->
+    <div class="section open" id="csec-imt">
+      <div class="sec-head" onclick="tSec('csec-imt')"><span class="sec-num">01</span><span class="sec-title">IMT Measurement <span class="sec-sub">內膜中層厚度</span></span><span class="sec-status normal" id="cst-imt">NORMAL</span><span class="sec-chev">▾</span></div>
+      <div class="sec-body">
+        <!-- Legend -->
+        <div class="imt-legend">
+          <span style="font-family:var(--mono);font-size:9px;color:var(--text-faint);margin-right:6px;letter-spacing:.08em">IMT CRITERIA</span>
+          <div class="imt-leg-item"><div class="imt-dot" style="background:#22c55e"></div>&lt; 0.8 mm — Ideal</div>
+          <div class="imt-leg-item"><div class="imt-dot" style="background:#f59e0b"></div>0.8 – 1.0 mm — Borderline</div>
+          <div class="imt-leg-item"><div class="imt-dot" style="background:#ef4444"></div>&gt; 1.0 mm or Plaque — High Risk</div>
+        </div>
+        <!-- IMT inputs -->
+        <div class="imt-grid">
+          <div class="imt-box">
+            <label>R-CCA IMT</label>
+            <div class="imt-input-wrap"><input type="number" step="0.01" min="0" max="5" placeholder="—" id="imt-rcca" oninput="imtUpdate()"><span class="imt-unit">mm</span></div>
+            <div class="imt-indicator" id="ind-rcca"></div>
+            <div class="imt-hint" id="hint-rcca"></div>
+          </div>
+          <div class="imt-box">
+            <label>L-CCA IMT</label>
+            <div class="imt-input-wrap"><input type="number" step="0.01" min="0" max="5" placeholder="—" id="imt-lcca" oninput="imtUpdate()"><span class="imt-unit">mm</span></div>
+            <div class="imt-indicator" id="ind-lcca"></div>
+            <div class="imt-hint" id="hint-lcca"></div>
+          </div>
+          <div class="imt-box">
+            <label>R-ICA IMT</label>
+            <div class="imt-input-wrap"><input type="number" step="0.01" min="0" max="5" placeholder="—" id="imt-rica" oninput="imtUpdate()"><span class="imt-unit">mm</span></div>
+            <div class="imt-indicator" id="ind-rica"></div>
+            <div class="imt-hint" id="hint-rica"></div>
+          </div>
+          <div class="imt-box">
+            <label>L-ICA IMT</label>
+            <div class="imt-input-wrap"><input type="number" step="0.01" min="0" max="5" placeholder="—" id="imt-lica" oninput="imtUpdate()"><span class="imt-unit">mm</span></div>
+            <div class="imt-indicator" id="ind-lica"></div>
+            <div class="imt-hint" id="hint-lica"></div>
+          </div>
+        </div>
+        <!-- Max IMT summary -->
+        <div class="imt-summary-bar" id="imt-summary" style="display:none">
+          <div>
+            <div class="imt-summary-val" id="imt-max-val">—</div>
+            <div class="imt-summary-label">Max IMT (mm)</div>
+          </div>
+          <div id="imt-risk-badge" class="imt-summary-badge"></div>
+        </div>
+        <!-- General IMT tags -->
+        <div class="fl">Overall IMT Assessment</div>
+        <div class="fg">
+          <span class="ftag sel-ok" data-val="IMT within normal limits bilaterally" data-lvl="ok" data-org="imt" onclick="cTag(this,'imt')">Normal bilaterally</span>
+          <span class="ftag" data-val="mildly increased IMT (0.8–1.0mm)" data-lvl="warn" data-org="imt" onclick="cTag(this,'imt')">Mildly increased</span>
+          <span class="ftag" data-val="increased IMT (&gt;1.0mm)" data-lvl="danger" data-org="imt" onclick="cTag(this,'imt')">Increased (&gt;1.0mm)</span>
+          <span class="ftag" data-val="asymmetric IMT (right > left)" data-lvl="warn" data-org="imt" onclick="cTag(this,'imt')">Asymmetric R&gt;L</span>
+          <span class="ftag" data-val="asymmetric IMT (left > right)" data-lvl="warn" data-org="imt" onclick="cTag(this,'imt')">Asymmetric L&gt;R</span>
+        </div>
+        <div class="ot-field"><label>Other notes</label><textarea id="cot-imt" placeholder="e.g. diffuse intimal thickening of bilateral CCA..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- PLAQUE -->
+    <div class="section open" id="csec-plaque">
+      <div class="sec-head" onclick="tSec('csec-plaque')"><span class="sec-num">02</span><span class="sec-title">Plaque <span class="sec-sub">斑塊</span></span><span class="sec-status normal" id="cst-plaque">NO PLAQUE</span><span class="sec-chev">▾</span></div>
+      <div class="sec-body">
+        <div class="fg" style="margin-bottom:12px">
+          <span class="ftag sel-ok" id="c-noplaq" onclick="cNoPlaque()">No plaque identified</span>
+          <span class="ftag" id="c-hasplaq" onclick="cHasPlaque()">Plaque present</span>
+        </div>
+        <div id="c-plaq-ws" style="display:none">
+          <table class="plaque-table" id="plaq-tbl">
+            <thead><tr>
+              <th>Location</th><th>Side</th><th>Size (mm)</th><th>Echogenicity</th><th>Surface</th><th>Stenosis est.</th><th></th>
+            </tr></thead>
+            <tbody id="plaq-body"></tbody>
+          </table>
+          <button class="btn-row-add" onclick="addPlaqueRow()">+ Add plaque</button>
+          <div class="subsect" style="margin-top:12px">
+            <div class="fl">Plaque Characteristics</div>
+            <div class="fg">
+              <span class="ftag" data-val="soft (lipid-rich) plaque" data-lvl="danger" data-org="plaque" onclick="cTag(this,'plaque')">Soft plaque</span>
+              <span class="ftag" data-val="calcified plaque" data-lvl="warn" data-org="plaque" onclick="cTag(this,'plaque')">Calcified</span>
+              <span class="ftag" data-val="mixed echogenicity plaque" data-lvl="warn" data-org="plaque" onclick="cTag(this,'plaque')">Mixed echo</span>
+              <span class="ftag" data-val="homogeneous echogenic (fibrous) plaque" data-lvl="warn" data-org="plaque" onclick="cTag(this,'plaque')">Fibrous/Echogenic</span>
+              <span class="ftag" data-val="irregular (ulcerated) plaque surface" data-lvl="danger" data-org="plaque" onclick="cTag(this,'plaque')">Ulcerated surface</span>
+              <span class="ftag" data-val="smooth plaque surface" data-lvl="warn" data-org="plaque" onclick="cTag(this,'plaque')">Smooth surface</span>
+            </div>
+          </div>
+        </div>
+        <div class="ot-field"><label>Other notes</label><textarea id="cot-plaque" placeholder="e.g. multiple calcified plaques at bilateral carotid bifurcation..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- FLOW & STENOSIS -->
+    <div class="section open" id="csec-flow">
+      <div class="sec-head" onclick="tSec('csec-flow')"><span class="sec-num">03</span><span class="sec-title">Flow &amp; Stenosis <span class="sec-sub">血流與狹窄</span></span><span class="sec-status normal" id="cst-flow">NORMAL</span><span class="sec-chev">▾</span></div>
+      <div class="sec-body">
+        <div class="two-col">
+          <div><div class="col-label">Right Side</div><div class="fg">
+            <span class="ftag sel-ok" data-val="right carotid flow normal, no significant stenosis" data-lvl="ok" data-org="flow" onclick="cTag(this,'flow')">Normal flow</span>
+            <span class="ftag" data-val="right CCA mild stenosis (&lt;50%)" data-lvl="warn" data-org="flow" onclick="cTag(this,'flow')">R-CCA &lt;50%</span>
+            <span class="ftag" data-val="right ICA mild stenosis (&lt;50%)" data-lvl="warn" data-org="flow" onclick="cTag(this,'flow')">R-ICA &lt;50%</span>
+            <span class="ftag" data-val="right ICA moderate stenosis (50–69%)" data-lvl="danger" data-org="flow" onclick="cTag(this,'flow')">R-ICA 50–69%</span>
+            <span class="ftag" data-val="right ICA severe stenosis (≥70%)" data-lvl="danger" data-org="flow" onclick="cTag(this,'flow')">R-ICA ≥70%</span>
+            <span class="ftag" data-val="right ICA near-occlusion" data-lvl="danger" data-org="flow" onclick="cTag(this,'flow')">R-ICA near-occlusion</span>
+          </div></div>
+          <div><div class="col-label">Left Side</div><div class="fg">
+            <span class="ftag sel-ok" data-val="left carotid flow normal, no significant stenosis" data-lvl="ok" data-org="flow" onclick="cTag(this,'flow')">Normal flow</span>
+            <span class="ftag" data-val="left CCA mild stenosis (&lt;50%)" data-lvl="warn" data-org="flow" onclick="cTag(this,'flow')">L-CCA &lt;50%</span>
+            <span class="ftag" data-val="left ICA mild stenosis (&lt;50%)" data-lvl="warn" data-org="flow" onclick="cTag(this,'flow')">L-ICA &lt;50%</span>
+            <span class="ftag" data-val="left ICA moderate stenosis (50–69%)" data-lvl="danger" data-org="flow" onclick="cTag(this,'flow')">L-ICA 50–69%</span>
+            <span class="ftag" data-val="left ICA severe stenosis (≥70%)" data-lvl="danger" data-org="flow" onclick="cTag(this,'flow')">L-ICA ≥70%</span>
+            <span class="ftag" data-val="left ICA near-occlusion" data-lvl="danger" data-org="flow" onclick="cTag(this,'flow')">L-ICA near-occlusion</span>
+          </div></div>
+        </div>
+        <div class="subsect" style="margin-top:10px"><div class="fl">Additional Flow Findings</div><div class="fg">
+          <span class="ftag" data-val="turbulent flow at carotid bifurcation" data-lvl="warn" data-org="flow" onclick="cTag(this,'flow')">Turbulent flow</span>
+          <span class="ftag" data-val="elevated PSV (peak systolic velocity)" data-lvl="warn" data-org="flow" onclick="cTag(this,'flow')">Elevated PSV</span>
+          <span class="ftag" data-val="dampened waveform" data-lvl="danger" data-org="flow" onclick="cTag(this,'flow')">Dampened waveform</span>
+          <span class="ftag" data-val="reversed flow" data-lvl="danger" data-org="flow" onclick="cTag(this,'flow')">Reversed flow</span>
+        </div></div>
+        <div class="ot-field"><label>PSV / EDV values</label><textarea id="cot-flow" placeholder="e.g. R-ICA PSV 180 cm/s, EDV 60 cm/s, ICA/CCA ratio 3.2..."></textarea></div>
+      </div>
+    </div>
+
+    <!-- VERTEBRAL -->
+    <div class="section open" id="csec-vert">
+      <div class="sec-head" onclick="tSec('csec-vert')"><span class="sec-num">04</span><span class="sec-title">Vertebral Arteries <span class="sec-sub">椎動脈</span></span><span class="sec-status normal" id="cst-vert">NORMAL</span><span class="sec-chev">▾</span></div>
+      <div class="sec-body">
+        <div class="fg">
+          <span class="ftag sel-ok" data-val="bilateral vertebral arteries normal flow" data-lvl="ok" data-org="vert" onclick="cTag(this,'vert')">Bilateral normal</span>
+          <span class="ftag" data-val="right vertebral artery dominant" data-lvl="ok" data-org="vert" onclick="cTag(this,'vert')">R dominant</span>
+          <span class="ftag" data-val="left vertebral artery dominant" data-lvl="ok" data-org="vert" onclick="cTag(this,'vert')">L dominant</span>
+          <span class="ftag" data-val="right vertebral artery hypoplastic" data-lvl="warn" data-org="vert" onclick="cTag(this,'vert')">R hypoplastic</span>
+          <span class="ftag" data-val="left vertebral artery hypoplastic" data-lvl="warn" data-org="vert" onclick="cTag(this,'vert')">L hypoplastic</span>
+          <span class="ftag" data-val="right vertebral artery reversed flow (subclavian steal)" data-lvl="danger" data-org="vert" onclick="cTag(this,'vert')">R reversed (steal)</span>
+          <span class="ftag" data-val="left vertebral artery reversed flow (subclavian steal)" data-lvl="danger" data-org="vert" onclick="cTag(this,'vert')">L reversed (steal)</span>
+          <span class="ftag" data-val="right vertebral artery not visualized" data-lvl="warn" data-org="vert" onclick="cTag(this,'vert')">R not visualized</span>
+          <span class="ftag" data-val="left vertebral artery not visualized" data-lvl="warn" data-org="vert" onclick="cTag(this,'vert')">L not visualized</span>
+        </div>
+        <div class="ot-field"><label>Other notes</label><textarea id="cot-vert" placeholder="e.g. right VA PSV 45 cm/s, normal triphasic waveform..."></textarea></div>
+      </div>
+    </div>
+
+    <div class="report-out" id="car-rpt"><div class="rep-head"><span>CAROTID ULTRASOUND REPORT</span><button class="btn-copy" onclick="copyRpt('car-rtxt')">⧉ COPY</button></div><div class="rep-content" id="car-rtxt"></div></div>
+  </main>
+</div>
+</div>
+
+<!-- ══════════════ JAVASCRIPT ══════════════ -->
+<script>
+// ── NAV ──
+function toggleDD(){document.getElementById('dd').classList.toggle('open')}
+document.addEventListener('click',e=>{if(!e.target.closest('#dd'))document.getElementById('dd').classList.remove('open')})
+function showCover(){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('visible','with-banner'));
+  const p=document.getElementById('page-cover');
+  p.classList.add('visible');
+  if(!document.getElementById('deploy-banner').classList.contains('hidden')) p.classList.add('with-banner');
+  document.getElementById('dd').classList.remove('open');
+}
+function showTool(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('visible','with-banner'));
+  const p=document.getElementById('page-'+id);
+  p.classList.add('visible');
+  if(!document.getElementById('deploy-banner').classList.contains('hidden')) p.classList.add('with-banner');
+  document.getElementById('dd').classList.remove('open');
+}
+function tSec(id){document.getElementById(id).classList.toggle('open')}
+
+// ── API KEY ──
+// ★ 在下方引號內填入您的 Anthropic API Key，存檔後部署即可零設定使用
+var EMBEDDED_API_KEY = '';
+
+function getApiKey(){ return EMBEDDED_API_KEY.trim(); }
+
+// No-op stubs (UI removed)
+function apikeyChanged(){}
+
+function closeBanner(){
+  document.getElementById('deploy-banner').classList.add('hidden');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('with-banner'));
+}
+
+function showBanner(){
+  document.getElementById('deploy-banner').classList.remove('hidden');
+  document.querySelectorAll('.page.visible').forEach(p=>p.classList.add('with-banner'));
+}
+function buildHeaders(){
+  const k=getApiKey();
+  const h={'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'};
+  if(k) h['x-api-key']=k;
+  return h;
+}
+
+
+// ── UNIVERSAL API CALL ──
+function callAPI(payload, onSuccess, onError) {
+  const k = getApiKey();
+  if(!k){
+    showBanner();
+    onError('⚠ 尚未設定 API Key。\n\n請將此 HTML 部署到網頁伺服器（建議：drop.netlify.com）\n並在 JS 原始碼中的 EMBEDDED_API_KEY 填入您的 Anthropic API Key（格式：sk-ant-...）。');
+    return;
+  }
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST','https://api.anthropic.com/v1/messages',true);
+  xhr.setRequestHeader('Content-Type','application/json');
+  xhr.setRequestHeader('anthropic-dangerous-direct-browser-access','true');
+  xhr.setRequestHeader('x-api-key', k);
+  xhr.timeout = 60000;
+  xhr.onload = function(){
+    try{
+      const data = JSON.parse(xhr.responseText);
+      if(xhr.status>=200 && xhr.status<300){
+        if(data.content?.length) onSuccess(data.content.map(x=>x.text||'').join(''));
+        else onError('No content returned.\n'+JSON.stringify(data));
+      } else {
+        onError('API Error '+xhr.status+': '+(data.error?.message||JSON.stringify(data)));
+      }
+    }catch(e){onError('JSON parse error: '+e.message+'\nRaw: '+xhr.responseText.slice(0,200));}
+  };
+  xhr.onerror = function(){ onError('Network error. Please check your API Key and connection.'); };
+  xhr.ontimeout = function(){onError('Request timeout (60s) — 請稍後再試。');};
+  xhr.send(JSON.stringify(payload));
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded',()=>{
+  const today=new Date().toISOString().split('T')[0];
+  ['abd-d','thy-d','car-d'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=today});
+  initAbd(); initThy(); initCar();
+  certInitDate(); certRenderOrder();
+  // Show banner if no API key embedded
+  if(!EMBEDDED_API_KEY.trim()) showBanner();
+});
+
+// ════════════════════════════════════
+// ABDOMINAL
+// ════════════════════════════════════
+const aS={liver:{},gb:{},pan:{},spl:{},kid:{},aoth:{}};
+const aDef={liver:['normal size','homogeneous echotexture','no focal lesion'],gb:['gallbladder normal','CBD within normal limits'],pan:['pancreas unremarkable'],spl:['spleen normal in size and echotexture'],kid:['left kidney unremarkable','right kidney unremarkable'],aoth:['no ascites','aorta normal caliber']};
+
+function initAbd(){
+  for(const[o,vs]of Object.entries(aDef)){vs.forEach(v=>{aS[o][v]='ok'});aUpdSt(o)}
+}
+function aTag(el,org){
+  const v=el.dataset.val,l=el.dataset.lvl,cls=['sel-ok','sel-warn','sel-danger'];
+  if(cls.some(c=>el.classList.contains(c))){cls.forEach(c=>el.classList.remove(c));delete aS[org][v]}
+  else{el.classList.add('sel-'+l);aS[org][v]=l}
+  aUpdSt(org);
+}
+function aUpdSt(o){
+  const vs=Object.values(aS[o]),st=document.getElementById('ast-'+o),nd=document.getElementById('and-'+o);
+  if(!st)return;
+  if(!vs.length){st.textContent='—';st.className='sec-status';nd.className='ndot';return}
+  let lv='ok';if(vs.includes('warn'))lv='warn';if(vs.includes('danger'))lv='danger';
+  st.textContent={ok:'NORMAL',warn:'NOTE',danger:'ABNORMAL'}[lv];
+  st.className='sec-status '+(lv==='ok'?'normal':lv==='warn'?'partial':'abnormal');
+  nd.className='ndot '+lv;
+}
+function abdScroll(id){document.getElementById('asec-'+id)?.scrollIntoView({behavior:'smooth',block:'start'})}
+function abdClear(){
+  document.querySelectorAll('#page-abd .ftag').forEach(t=>t.classList.remove('sel-ok','sel-warn','sel-danger'));
+  document.querySelectorAll('#page-abd textarea').forEach(t=>t.value='');
+  for(const o in aS)aS[o]={};
+  for(const[o,vs]of Object.entries(aDef)){vs.forEach(v=>{aS[o][v]='ok';document.querySelectorAll(`#page-abd .ftag[data-val="${v}"]`).forEach(el=>el.classList.add('sel-ok'))});}
+  for(const o in aS)aUpdSt(o);
+  document.getElementById('abd-rpt').classList.remove('vis');
+}
+function abdCollect(){
+  const lb={liver:'Liver',gb:'Gallbladder & Bile Duct',pan:'Pancreas',spl:'Spleen',kid:'Kidneys',aoth:'Others'};
+  return Object.entries(lb).map(([o,l])=>{
+    const ts=Object.keys(aS[o]),ex=document.getElementById('aot-'+o)?.value.trim();
+    return `${l}: ${[...ts,...(ex?[ex]:[])].join('; ')||'unremarkable'}`;
+  }).join('\n');
+}
+async function abdGenerate(){
+  const b=document.getElementById('abd-gbtn'),bi=document.getElementById('abd-bi'),bt=document.getElementById('abd-bt');
+  b.disabled=true;bi.innerHTML='<span class="spinner"><\/span>';bt.textContent='GENERATING...';
+  const n=document.getElementById('abd-n').value||'—',d=document.getElementById('abd-d').value||'—',doc=document.getElementById('abd-doc').value||'—';
+  const prompt=`You are a radiologist writing a formal abdominal ultrasound report.\nPatient: ${n} | Date: ${d} | Physician: ${doc}\n\nFindings:\n${abdCollect()}\n\nWrite a concise professional English report using EXACTLY this structure:\n\nABDOMINAL ULTRASOUND REPORT\nPatient: ${n}  Date: ${d}  Physician: ${doc}\n\nLIVER:\nGALLBLADDER AND BILE DUCT:\nPANCREAS:\nSPLEEN:\nKIDNEYS:\nOTHER FINDINGS:\nIMPRESSION:\nRECOMMENDATION:\n\nRules: Expand abbreviations. Standard radiological English. Do not add unlisted findings. Do NOT add any signature line, footer, date stamp, or closing statement after RECOMMENDATION.`;
+  const oe=document.getElementById('abd-rpt'),te=document.getElementById('abd-rtxt');
+  oe.classList.add('vis');te.textContent='Generating...';
+  const payload={model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]};
+  callAPI(payload,
+    text=>{te.textContent=text;oe.scrollIntoView({behavior:'smooth',block:'start'});},
+    err=>{te.textContent=err;}
+  );
+  b.disabled=false;bi.textContent='▶';bt.textContent='GENERATE REPORT';
+}
+
+// ════════════════════════════════════
+// THYROID (TI-RADS)
+// ════════════════════════════════════
+const tS={gland:{},lymph:{}};
+let tNods=[],tActiveN=0;
+const tiF={
+  composition:{label:'Composition',opts:[{v:'cystic or almost completely cystic',p:0,l:'Cystic'},{v:'spongiform',p:0,l:'Spongiform'},{v:'mixed cystic and solid',p:1,l:'Mixed'},{v:'solid or almost completely solid',p:2,l:'Solid'}]},
+  echogenicity:{label:'Echo',opts:[{v:'anechoic',p:0,l:'Anechoic'},{v:'hyperechoic or isoechoic',p:1,l:'Hyper/Iso'},{v:'hypoechoic',p:2,l:'Hypo'},{v:'very hypoechoic',p:3,l:'Very hypo'}]},
+  shape:{label:'Shape',opts:[{v:'wider than tall',p:0,l:'Wider-than-tall'},{v:'taller than wide',p:3,l:'Taller-than-wide'}]},
+  margin:{label:'Margin',opts:[{v:'smooth',p:0,l:'Smooth'},{v:'ill-defined',p:0,l:'Ill-defined'},{v:'lobulated or irregular',p:2,l:'Lobulated/Irreg'},{v:'extra-thyroidal extension',p:3,l:'Extra-thyroidal'}]},
+  foci:{label:'Foci',opts:[{v:'none or comet-tail artifacts',p:0,l:'None/Comet-tail'},{v:'macrocalcifications',p:1,l:'Macrocalc'},{v:'rim calcifications',p:2,l:'Rim calc'},{v:'punctate echogenic foci (microcalcifications)',p:3,l:'Punctate/Micro'}]}
+};
+function tiCat(pts){
+  if(pts===0)return{l:'TR1',d:'Benign — No FNA'};
+  if(pts<=2)return{l:'TR2',d:'Not suspicious — No FNA'};
+  if(pts<=4)return{l:'TR3',d:'Mildly suspicious — FNA if ≥2.5cm'};
+  if(pts<=6)return{l:'TR4',d:'Moderately suspicious — FNA if ≥1.5cm'};
+  return{l:'TR5',d:'Highly suspicious — FNA if ≥1.0cm'};
+}
+function tiScore(sc){return Object.keys(tiF).reduce((s,k)=>{const o=tiF[k].opts.find(x=>x.v===sc[k]);return s+(o?o.p:0)},0)}
+
+function initThy(){
+  const def={gland:['thyroid gland normal in size and echogenicity','normal echogenicity and homogeneous texture'],lymph:['no cervical lymphadenopathy']};
+  for(const[o,vs]of Object.entries(def)){vs.forEach(v=>{tS[o][v]='ok';document.querySelectorAll(`#page-thy .ftag[data-val="${v}"]`).forEach(el=>el.classList.add('sel-ok'))});tUpdSt(o);}
+  document.getElementById('tst-nod').textContent='NO NODULE';
+  document.getElementById('tst-nod').className='sec-status normal';
+  document.getElementById('tnd-nod').className='ndot ok';
+}
+function tTag(el){
+  const o=el.dataset.org,v=el.dataset.val,l=el.dataset.lvl,cls=['sel-ok','sel-warn','sel-danger'];
+  if(cls.some(c=>el.classList.contains(c))){cls.forEach(c=>el.classList.remove(c));delete tS[o][v]}
+  else{el.classList.add('sel-'+l);tS[o][v]=l}
+  tUpdSt(o);
+}
+function tUpdSt(o){
+  const vs=Object.values(tS[o]||{}),st=document.getElementById('tst-'+o),nd=document.getElementById('tnd-'+o);
+  if(!st)return;
+  if(!vs.length){st.textContent='—';st.className='sec-status';nd.className='ndot';return}
+  let lv='ok';if(vs.includes('warn'))lv='warn';if(vs.includes('danger'))lv='danger';
+  st.textContent={ok:'NORMAL',warn:'NOTE',danger:'ABNORMAL'}[lv];
+  st.className='sec-status '+(lv==='ok'?'normal':lv==='warn'?'partial':'abnormal');
+  nd.className='ndot '+lv;
+}
+function thyScroll(id){document.getElementById('tsec-'+id)?.scrollIntoView({behavior:'smooth',block:'start'})}
+function tNoNod(){
+  document.getElementById('t-nonod').classList.add('sel-ok');
+  document.getElementById('t-hasnod').classList.remove('sel-ok','sel-warn');
+  document.getElementById('t-nod-ws').style.display='none';
+  tNods=[];
+  document.getElementById('tst-nod').textContent='NO NODULE';
+  document.getElementById('tst-nod').className='sec-status normal';
+  document.getElementById('tnd-nod').className='ndot ok';
+}
+function tHasNod(){
+  document.getElementById('t-hasnod').classList.add('sel-warn');
+  document.getElementById('t-nonod').classList.remove('sel-ok');
+  document.getElementById('t-nod-ws').style.display='block';
+  if(!tNods.length)tAddNod();
+  tNodStatus();
+}
+function tAddNod(){tNods.push({loc:'',size:'',sc:{}});tRenderTabs();tSetActive(tNods.length-1);}
+function tRenderTabs(){document.getElementById('t-ntabs').innerHTML=tNods.map((n,i)=>`<div class="nodule-tab ${i===tActiveN?'active':''}" onclick="tSetActive(${i})">Nodule ${i+1}<\/div>`).join('');}
+function tSetActive(i){tActiveN=i;tRenderTabs();tRenderPanels();}
+function tRenderPanels(){
+  document.getElementById('t-npanels').innerHTML=tNods.map((n,ni)=>`
+  <div class="nodule-panel ${ni===tActiveN?'active':''}" id="tnp-${ni}">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+      <div class="pt-field"><label>Location<\/label>
+        <select onchange="tNods[${ni}].loc=this.value;tNodStatus()">
+          <option value="">—<\/option>
+          ${['right lobe upper','right lobe mid','right lobe lower','left lobe upper','left lobe mid','left lobe lower','isthmus'].map(l=>`<option ${n.loc===l?'selected':''}>${l}<\/option>`).join('')}
+        <\/select>
+      <\/div>
+      <div class="pt-field"><label>Size (cm)<\/label>
+        <input type="text" placeholder="e.g. 1.2×0.8" value="${n.size||''}" onchange="tNods[${ni}].size=this.value">
+      <\/div>
+      <div class="pt-field"><label>Score / Category<\/label>
+        <div style="height:29px;display:flex;align-items:center;font-family:var(--mono);font-size:13px;font-weight:500">${tiScore(n.sc)}pts → ${tiCat(tiScore(n.sc)).l}<\/div>
+      <\/div>
+    <\/div>
+    ${Object.entries(tiF).map(([k,f])=>`
+      <div class="subsect"><div class="fl">${f.label}<\/div><div class="fg">
+        ${f.opts.map(o=>`<span class="ftag ${n.sc[k]===o.v?'sel-warn':''}" onclick="tSetScore(${ni},'${k}','${o.v}')" title="${o.p}pt">${o.l} <span style="opacity:.5;font-size:10px">(${o.p})<\/span><\/span>`).join('')}
+      <\/div><\/div>
+    `).join('')}
+    <div class="ti-score-bar">
+      <div class="sc-box hl"><span class="sl">TOTAL<\/span><span class="sv">${tiScore(n.sc)}<\/span><\/div>
+      ${Object.entries(tiF).map(([k,f])=>{const o=f.opts.find(x=>x.v===n.sc[k]);return`<div class="sc-box"><span class="sl">${f.label.slice(0,5).toUpperCase()}<\/span><span class="sv" style="font-size:14px">${o?o.p:'—'}<\/span><\/div>`}).join('')}
+      <div class="ti-cat-info"><div class="tl">${tiCat(tiScore(n.sc)).l}<\/div><div class="td">${tiCat(tiScore(n.sc)).d}<\/div><\/div>
+    <\/div>
+    <div class="ot-field"><label>Additional notes<\/label><textarea placeholder="vascularity, halo..." onchange="tNods[${ni}].notes=this.value">${n.notes||''}<\/textarea><\/div>
+    ${tNods.length>1?`<button onclick="tRemNod(${ni})" style="margin-top:6px;padding:3px 9px;font-size:11px;font-family:var(--mono);cursor:pointer;border:1px solid var(--border);border-radius:3px;background:var(--bg);color:var(--text-muted)">✕ Remove nodule ${ni+1}<\/button>`:''}
+  <\/div>`).join('');
+}
+function tSetScore(ni,k,v){tNods[ni].sc[k]=v;tRenderPanels();tNodStatus();}
+function tRemNod(i){tNods.splice(i,1);tActiveN=Math.min(tActiveN,tNods.length-1);if(!tNods.length){tNoNod();return}tRenderTabs();tRenderPanels();tNodStatus();}
+function tNodStatus(){
+  const st=document.getElementById('tst-nod'),nd=document.getElementById('tnd-nod');if(!st)return;
+  if(!tNods.length){st.textContent='NO NODULE';st.className='sec-status normal';nd.className='ndot ok';return;}
+  const mx=Math.max(...tNods.map(n=>tiScore(n.sc))),cat=tiCat(mx);
+  let lv='ok';if(mx>=3)lv='warn';if(mx>=5)lv='danger';
+  st.textContent=`${cat.l} (${mx}pts)`;
+  st.className='sec-status '+(lv==='ok'?'normal':lv==='warn'?'partial':'abnormal');
+  nd.className='ndot '+lv;
+}
+function thyClear(){
+  document.querySelectorAll('#page-thy .ftag').forEach(t=>t.classList.remove('sel-ok','sel-warn','sel-danger'));
+  document.querySelectorAll('#page-thy textarea').forEach(t=>t.value='');
+  for(const o in tS)tS[o]={};
+  tNods=[];tActiveN=0;
+  document.getElementById('t-nod-ws').style.display='none';
+  document.getElementById('t-ntabs').innerHTML='';
+  document.getElementById('t-npanels').innerHTML='';
+  document.getElementById('t-nonod').classList.add('sel-ok');
+  document.getElementById('t-hasnod').classList.remove('sel-ok','sel-warn');
+  initThy();
+  document.getElementById('thy-rpt').classList.remove('vis');
+}
+function thyCollect(){
+  const g=Object.keys(tS.gland),gg=document.getElementById('tot-gland').value.trim();
+  const l=Object.keys(tS.lymph),ll=document.getElementById('tot-lymph').value.trim();
+  const nodLines=!tNods.length?'No thyroid nodule identified.':tNods.map((n,i)=>{
+    const sc=tiScore(n.sc),cat=tiCat(sc);
+    const feats=Object.entries(tiF).map(([k,f])=>{const o=f.opts.find(x=>x.v===n.sc[k]);return o?`${f.label}: ${o.v}`:null}).filter(Boolean).join(', ');
+    return `Nodule ${i+1}: ${n.loc||'location unspecified'}, size ${n.size||'not measured'}; ${feats||'features not fully characterized'}; TI-RADS score ${sc} (${cat.l} — ${cat.d})${n.notes?'; '+n.notes:''}`;
+  }).join('\n');
+  return `Thyroid gland: ${[...g,...(gg?[gg]:[])].join('; ')||'normal'}\nNodules:\n${nodLines}\nLymph nodes: ${[...l,...(ll?[ll]:[])].join('; ')||'unremarkable'}`;
+}
+async function thyGenerate(){
+  const b=document.getElementById('thy-gbtn'),bi=document.getElementById('thy-bi'),bt=document.getElementById('thy-bt');
+  b.disabled=true;bi.innerHTML='<span class="spinner"><\/span>';bt.textContent='GENERATING...';
+  const n=document.getElementById('thy-n').value||'—',d=document.getElementById('thy-d').value||'—',doc=document.getElementById('thy-doc').value||'—';
+  const prompt=`You are an endocrine radiologist using ACR TI-RADS 2017.\nPatient: ${n} | Date: ${d} | Physician: ${doc}\n\nFindings:\n${thyCollect()}\n\nWrite a professional English thyroid ultrasound report using EXACTLY this structure:\n\nTHYROID ULTRASOUND REPORT\nPatient: ${n}  Date: ${d}  Physician: ${doc}\n\nTHYROID GLAND:\nTHYROID NODULES:\nCERVICAL LYMPH NODES:\nIMPRESSION:\nRECOMMENDATION:\n\nApply ACR TI-RADS 2017 FNA criteria. Standard radiological English. Do NOT add any signature line, footer, date stamp, or closing statement after RECOMMENDATION.`;
+  const oe=document.getElementById('thy-rpt'),te=document.getElementById('thy-rtxt');
+  oe.classList.add('vis');te.textContent='Generating...';
+  const payload={model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]};
+  callAPI(payload,
+    text=>{te.textContent=text;oe.scrollIntoView({behavior:'smooth',block:'start'});},
+    err=>{te.textContent=err;}
+  );
+  b.disabled=false;bi.textContent='▶';bt.textContent='GENERATE REPORT';
+}
+
+// ════════════════════════════════════
+// CAROTID ULTRASOUND
+// ════════════════════════════════════
+const cS={imt:{},plaque:{},flow:{},vert:{}};
+let cPlaques=[];
+let cHasPlaq=false;
+
+const cDef={
+  imt:['IMT within normal limits bilaterally'],
+  plaque:[],
+  flow:['right carotid flow normal, no significant stenosis','left carotid flow normal, no significant stenosis'],
+  vert:['bilateral vertebral arteries normal flow']
+};
+
+function initCar(){
+  for(const[o,vs]of Object.entries(cDef)){
+    vs.forEach(v=>{cS[o][v]='ok';document.querySelectorAll(`#page-car .ftag[data-val="${v}"]`).forEach(el=>el.classList.add('sel-ok'))});
+    cUpdSt(o);
+  }
+  // No plaque default
+  document.getElementById('c-noplaq').classList.add('sel-ok');
+  cUpdPlaqSt();
+}
+
+function cTag(el,org){
+  const v=el.dataset.val,l=el.dataset.lvl,cls=['sel-ok','sel-warn','sel-danger'];
+  if(cls.some(c=>el.classList.contains(c))){cls.forEach(c=>el.classList.remove(c));delete cS[org][v]}
+  else{el.classList.add('sel-'+l);cS[org][v]=l}
+  cUpdSt(org);
+}
+function cUpdSt(o){
+  const vs=Object.values(cS[o]),st=document.getElementById('cst-'+o),nd=document.getElementById('cnd-'+o);
+  if(!st)return;
+  if(!vs.length){st.textContent='—';st.className='sec-status';nd.className='ndot';return}
+  let lv='ok';if(vs.includes('warn'))lv='warn';if(vs.includes('danger'))lv='danger';
+  st.textContent={ok:'NORMAL',warn:'NOTE',danger:'ABNORMAL'}[lv];
+  st.className='sec-status '+(lv==='ok'?'normal':lv==='warn'?'partial':'abnormal');
+  nd.className='ndot '+lv;
+}
+function carScroll(id){document.getElementById('csec-'+id)?.scrollIntoView({behavior:'smooth',block:'start'})}
+
+// IMT logic
+function imtUpdate(){
+  const ids=['rcca','lcca','rica','lica'];
+  let maxV=null,maxLv='ok';
+  ids.forEach(id=>{
+    const el=document.getElementById('imt-'+id);
+    const ind=document.getElementById('ind-'+id);
+    const hint=document.getElementById('hint-'+id);
+    const v=parseFloat(el.value);
+    if(isNaN(v)||el.value===''){ind.className='imt-indicator';hint.textContent='';return}
+    let lv,ht;
+    if(v<0.8){lv='ok';ht='Ideal (<0.8mm)'}
+    else if(v<=1.0){lv='warn';ht='Borderline (0.8–1.0mm)'}
+    else{lv='danger';ht='High risk (>1.0mm)'}
+    ind.className='imt-indicator '+lv;
+    hint.textContent=ht;
+    hint.style.color=lv==='ok'?'var(--ok)':lv==='warn'?'var(--warn)':'var(--danger)';
+    if(maxV===null||v>maxV){maxV=v;maxLv=lv;}
+  });
+  const sumEl=document.getElementById('imt-summary');
+  const maxEl=document.getElementById('imt-max-val');
+  const badgeEl=document.getElementById('imt-risk-badge');
+  if(maxV!==null){
+    sumEl.style.display='flex';
+    maxEl.textContent=maxV.toFixed(2);
+    const badges={ok:{txt:'IDEAL',bg:var2('ok-light'),color:var2('ok')},warn:{txt:'BORDERLINE',bg:var2('warn-light'),color:var2('warn')},danger:{txt:'HIGH RISK',bg:var2('danger-light'),color:var2('danger')}};
+    const b=badges[maxLv];
+    badgeEl.textContent=b.txt;
+    badgeEl.style.background=b.bg;
+    badgeEl.style.color=b.color;
+  } else {
+    sumEl.style.display='none';
+  }
+  // Update IMT section status based on max
+  const st=document.getElementById('cst-imt'),nd=document.getElementById('cnd-imt');
+  if(maxV===null){st.textContent='NORMAL';st.className='sec-status normal';nd.className='ndot ok';return;}
+  if(maxLv==='ok'){st.textContent='NORMAL';st.className='sec-status normal';nd.className='ndot ok';}
+  else if(maxLv==='warn'){st.textContent='BORDERLINE';st.className='sec-status partial';nd.className='ndot warn';}
+  else{st.textContent='ABNORMAL';st.className='sec-status abnormal';nd.className='ndot danger';}
+}
+function var2(name){
+  return getComputedStyle(document.documentElement).getPropertyValue('--'+name).trim();
+}
+
+// Plaque
+function cNoPlaque(){
+  cHasPlaq=false;
+  document.getElementById('c-noplaq').classList.add('sel-ok');
+  document.getElementById('c-hasplaq').classList.remove('sel-ok','sel-warn');
+  document.getElementById('c-plaq-ws').style.display='none';
+  cPlaques=[];
+  cUpdPlaqSt();
+}
+function cHasPlaque(){
+  cHasPlaq=true;
+  document.getElementById('c-hasplaq').classList.add('sel-warn');
+  document.getElementById('c-noplaq').classList.remove('sel-ok');
+  document.getElementById('c-plaq-ws').style.display='block';
+  if(!cPlaques.length)addPlaqueRow();
+  cUpdPlaqSt();
+}
+function cUpdPlaqSt(){
+  const st=document.getElementById('cst-plaque'),nd=document.getElementById('cnd-plaque');
+  if(!cHasPlaq){st.textContent='NO PLAQUE';st.className='sec-status normal';nd.className='ndot ok';return}
+  const tags=Object.values(cS.plaque);
+  let lv='warn';if(tags.includes('danger'))lv='danger';
+  st.textContent='PLAQUE';
+  st.className='sec-status '+(lv==='warn'?'partial':'abnormal');
+  nd.className='ndot '+lv;
+}
+function addPlaqueRow(){
+  cPlaques.push({loc:'',side:'',size:'',echo:'',surface:'',sten:''});
+  renderPlaqueTable();
+}
+function renderPlaqueTable(){
+  const tb=document.getElementById('plaq-body');
+  tb.innerHTML=cPlaques.map((p,i)=>`
+    <tr>
+      <td><select onchange="cPlaques[${i}].loc=this.value">
+        <option value="">—<\/option>
+        ${['CCA','Bifurcation','ICA proximal','ICA','ECA'].map(l=>`<option ${p.loc===l?'selected':''}>${l}<\/option>`).join('')}
+      <\/select><\/td>
+      <td><select onchange="cPlaques[${i}].side=this.value">
+        <option value="">—<\/option>
+        <option ${p.side==='Right'?'selected':''}>Right<\/option>
+        <option ${p.side==='Left'?'selected':''}>Left<\/option>
+        <option ${p.side==='Bilateral'?'selected':''}>Bilateral<\/option>
+      <\/select><\/td>
+      <td><input type="text" placeholder="e.g. 8×3" value="${p.size||''}" onchange="cPlaques[${i}].size=this.value"><\/td>
+      <td><select onchange="cPlaques[${i}].echo=this.value">
+        <option value="">—<\/option>
+        <option ${p.echo==='Soft/hypoechoic'?'selected':''}>Soft/hypoechoic<\/option>
+        <option ${p.echo==='Mixed'?'selected':''}>Mixed<\/option>
+        <option ${p.echo==='Fibrous/echogenic'?'selected':''}>Fibrous/echogenic<\/option>
+        <option ${p.echo==='Calcified'?'selected':''}>Calcified<\/option>
+      <\/select><\/td>
+      <td><select onchange="cPlaques[${i}].surface=this.value">
+        <option value="">—<\/option>
+        <option ${p.surface==='Smooth'?'selected':''}>Smooth<\/option>
+        <option ${p.surface==='Irregular'?'selected':''}>Irregular<\/option>
+        <option ${p.surface==='Ulcerated'?'selected':''}>Ulcerated<\/option>
+      <\/select><\/td>
+      <td><select onchange="cPlaques[${i}].sten=this.value">
+        <option value="">—<\/option>
+        <option ${p.sten==='<50%'?'selected':''}>&lt;50%<\/option>
+        <option ${p.sten==='50-69%'?'selected':''}>50-69%<\/option>
+        <option ${p.sten==='≥70%'?'selected':''}>≥70%<\/option>
+        <option ${p.sten==='Near-occlusion'?'selected':''}>Near-occlusion<\/option>
+      <\/select><\/td>
+      <td><button class="btn-row-del" onclick="removePlaqueRow(${i})">✕<\/button><\/td>
+    <\/tr>
+  `).join('');
+}
+function removePlaqueRow(i){cPlaques.splice(i,1);if(!cPlaques.length)cNoPlaque();else renderPlaqueTable();}
+
+function carClear(){
+  document.querySelectorAll('#page-car .ftag').forEach(t=>t.classList.remove('sel-ok','sel-warn','sel-danger'));
+  document.querySelectorAll('#page-car textarea').forEach(t=>t.value='');
+  document.querySelectorAll('#page-car input[type=number]').forEach(t=>t.value='');
+  for(const o in cS)cS[o]={};
+  cPlaques=[];cHasPlaq=false;
+  imtUpdate();
+  document.getElementById('imt-summary').style.display='none';
+  initCar();
+  document.getElementById('car-rpt').classList.remove('vis');
+}
+
+function carCollect(){
+  const ids=['rcca','lcca','rica','lica'];
+  const labels_={'rcca':'R-CCA','lcca':'L-CCA','rica':'R-ICA','lica':'L-ICA'};
+  const imtLines=ids.map(id=>{const v=document.getElementById('imt-'+id).value;return v?`${labels_[id]}: ${v} mm`:null}).filter(Boolean);
+  const imtTags=Object.keys(cS.imt);
+  const imtOt=document.getElementById('cot-imt').value.trim();
+
+  const plaqLines=cHasPlaq?cPlaques.map((p,i)=>`Plaque ${i+1}: ${p.side} ${p.loc}, size ${p.size||'not measured'}, ${p.echo||'—'} echogenicity, ${p.surface||'—'} surface, stenosis ${p.sten||'not estimated'}`).join('\n'):'No plaque identified';
+  const plaqTags=Object.keys(cS.plaque);
+  const plaqOt=document.getElementById('cot-plaque').value.trim();
+
+  const flowTags=Object.keys(cS.flow);
+  const flowOt=document.getElementById('cot-flow').value.trim();
+  const vertTags=Object.keys(cS.vert);
+  const vertOt=document.getElementById('cot-vert').value.trim();
+
+  return [
+    `IMT:\n${[...imtLines,...imtTags,...(imtOt?[imtOt]:[])].join('\n')||'Within normal limits'}`,
+    `Plaque:\n${plaqLines}\n${[...plaqTags,...(plaqOt?[plaqOt]:[])].join('; ')||''}`,
+    `Flow & Stenosis:\n${[...flowTags,...(flowOt?[flowOt]:[])].join('; ')||'normal'}`,
+    `Vertebral Arteries:\n${[...vertTags,...(vertOt?[vertOt]:[])].join('; ')||'normal'}`
+  ].join('\n\n');
+}
+
+async function carGenerate(){
+  const b=document.getElementById('car-gbtn'),bi=document.getElementById('car-bi'),bt=document.getElementById('car-bt');
+  b.disabled=true;bi.innerHTML='<span class="spinner"><\/span>';bt.textContent='GENERATING...';
+  const n=document.getElementById('car-n').value||'—',d=document.getElementById('car-d').value||'—',doc=document.getElementById('car-doc').value||'—';
+  const prompt=`You are a vascular radiologist writing a formal carotid ultrasound report.\nPatient: ${n} | Date: ${d} | Physician: ${doc}\n\nFindings:\n${carCollect()}\n\nIMT criteria: <0.8mm = normal/ideal; 0.8–1.0mm = borderline (increased cardiovascular risk); >1.0mm or plaque = high risk (significant atherosclerosis).\n\nWrite a concise professional English report using EXACTLY this structure:\n\nCAROTID ULTRASOUND REPORT\nPatient: ${n}  Date: ${d}  Physician: ${doc}\n\nINTIMA-MEDIA THICKNESS (IMT):\nPLAQUE:\nFLOW AND STENOSIS:\nVERTEBRAL ARTERIES:\nIMPRESSION:\nRECOMMENDATION:\n\nInclude cardiovascular risk assessment based on IMT. Standard radiological English. Reference NASCET criteria for stenosis if applicable. Do NOT add any signature line, footer, date stamp, or closing statement after RECOMMENDATION.`;
+  const oe=document.getElementById('car-rpt'),te=document.getElementById('car-rtxt');
+  oe.classList.add('vis');te.textContent='Generating...';
+  const payload={model:'claude-sonnet-4-20250514',max_tokens:1100,messages:[{role:'user',content:prompt}]};
+  callAPI(payload,
+    text=>{te.textContent=text;oe.scrollIntoView({behavior:'smooth',block:'start'});},
+    err=>{te.textContent=err;}
+  );
+  b.disabled=false;bi.textContent='▶';bt.textContent='GENERATE REPORT';
+}
+
+// ── COPY UTILITIES ──
+function _doCopy(text, onOk, onFail) {
+  // Method 1: modern clipboard API
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(onOk).catch(function() {
+      _execCopy(text, onOk, onFail);
+    });
+    return;
+  }
+  _execCopy(text, onOk, onFail);
+}
+
+function _execCopy(text, onOk, onFail) {
+  // Method 2: create off-screen textarea + execCommand
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(ta);
+  ta.select();
+  ta.setSelectionRange(0, ta.value.length);
+  var ok = false;
+  try { ok = document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+  if (ok) { onOk(); } else { onFail(); }
+}
+
+// Copy report output (div.rep-content)
+function copyRpt(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var text = (el.tagName === 'TEXTAREA') ? el.value : el.innerText || el.textContent;
+  if (!text.trim()) return;
+  var btn = el.closest('.report-out') ? el.closest('.report-out').querySelector('.btn-copy') : null;
+  var ok   = function() { if(btn){btn.textContent='✓ COPIED'; setTimeout(function(){btn.textContent='⧉ COPY';},1500);} };
+  var fail = function() { if(btn){btn.textContent='✗ FAILED'; setTimeout(function(){btn.textContent='⧉ COPY';},1500);} };
+  _doCopy(text, ok, fail);
+}
+
+// Copy cert field textarea
+function certCopyField(fieldId, btnEl) {
+  var ta = document.getElementById(fieldId);
+  var text = ta ? ta.value : '';
+  var orig = btnEl ? btnEl.textContent : '⧉ 複製';
+  if (!text.trim()) { if(btnEl){btnEl.textContent='（空白）'; setTimeout(function(){btnEl.textContent=orig;},1500);} return; }
+  var ok   = function() { if(btnEl){btnEl.textContent='✓ 已複製'; setTimeout(function(){btnEl.textContent=orig;},1500);} };
+  var fail = function() { if(btnEl){btnEl.textContent='✗ 失敗';   setTimeout(function(){btnEl.textContent=orig;},1500);} };
+  _doCopy(text, ok, fail);
+}
+
+// Copy OPD note textarea
+function opdCopyNote() {
+  var el = document.getElementById('opd-note-out');
+  var text = el ? el.value : '';
+  var btn = document.getElementById('opd-copy-btn');
+  var ok   = function() { if(btn){btn.textContent='✓ COPIED'; setTimeout(function(){btn.textContent='⧉ COPY';},1400);} };
+  var fail = function() { if(btn){btn.textContent='✗ FAILED'; setTimeout(function(){btn.textContent='⧉ COPY';},1400);} };
+  _doCopy(text, ok, fail);
+}
+
+
+function opdScroll(id) {
+  document.getElementById('opd-sec-' + id)?.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function opdClear() {
+  ['s','o','p'].forEach(g => {
+    opdSel[g] = [];
+    document.querySelectorAll(`#page-opd .ftag[data-grp="${g}"]`).forEach(el =>
+      el.classList.remove('sel-ok','sel-warn','sel-danger'));
+    opdUpdStatus(g);
+  });
+  ['opd-s-free','opd-o-free','opd-p-free','opd-note-out'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  const temp = document.getElementById('opd-temp'); if(temp) temp.value = '';
+  const hint = document.getElementById('opd-temp-hint'); if(hint) hint.textContent = '';
+}
+
+
+// ════════════════════════════════════
+// TOOL 05 — CERT
+// ════════════════════════════════════
+var certDxSel = [];
+var certOrderSel = [];
+
+function certInitDate() {
+  var now = new Date();
+  var roc = now.getFullYear() - 1911;
+  var m = now.getMonth() + 1;
+  var d = now.getDate();
+  // HTML uses cert-yr / cert-mo / cert-day
+  var ry = document.getElementById('cert-yr');
+  var rm = document.getElementById('cert-mo');
+  var rd = document.getElementById('cert-day');
+  if(ry) ry.value = roc;
+  if(rm) rm.value = m;
+  if(rd) rd.value = d;
+}
+
+function certRenderDx() {
+  var ta = document.getElementById('cert-dx-text');
+  if(!ta) return;
+  // items joined with 、, no separator between label and first item
+  // (diagnosis field has no fixed prefix, just the selected items)
+  ta.value = certDxSel.length ? certDxSel.join('、') + '（以下空白）' : '';
+}
+
+function certRenderOrder() {
+  var ta = document.getElementById('cert-order-text');
+  if(!ta) return;
+  var yr  = (document.getElementById('cert-yr')  || {value:''}).value || '___';
+  var mo  = (document.getElementById('cert-mo')  || {value:''}).value || '__';
+  var day = (document.getElementById('cert-day') || {value:''}).value || '__';
+  // Fixed prefix — no 、between prefix and first selected item
+  var prefix = '因上述原因於' + yr + '年' + mo + '月' + day + '日就醫';
+  ta.value = prefix + (certOrderSel.length ? certOrderSel.join('、') : '') + '（以下空白）';
+}
+
+function certDateChanged() { certRenderOrder(); }
+
+function certToggleDx(el) {
+  var val = el.dataset.val;
+  var idx = certDxSel.indexOf(val);
+  if(idx >= 0) {
+    certDxSel.splice(idx,1);
+    el.classList.remove('sel');
+  } else {
+    certDxSel.push(val);
+    el.classList.add('sel');
+  }
+  certRenderDx();
+}
+
+function certToggleOrder(el) {
+  var val = el.dataset.val;
+  var idx = certOrderSel.indexOf(val);
+  if(idx >= 0) {
+    certOrderSel.splice(idx,1);
+    el.classList.remove('sel');
+  } else {
+    certOrderSel.push(val);
+    el.classList.add('sel');
+  }
+  certRenderOrder();
+}
+
+function certClear() {
+  certDxSel = [];
+  certOrderSel = [];
+  document.querySelectorAll('#page-cert .cert-phrase').forEach(function(el){ el.classList.remove('sel'); });
+  var ta1 = document.getElementById('cert-dx-text');
+  var ta2 = document.getElementById('cert-order-text');
+  if(ta1) ta1.value = '';
+  if(ta2) ta2.value = '';
+  certInitDate();
+  certRenderDx();
+  certRenderOrder();
+}
+
+// ════════════════════════════════════
+// TOOL 04 — OPD NOTE
+// ════════════════════════════════════
+var opdSel = {s:[], o:[], p:[]};
+
+window.addEventListener('DOMContentLoaded', function() {
+  var el = document.getElementById('opd-date');
+  if(el) el.value = new Date().toISOString().split('T')[0];
+  certInitDate();
+  certRenderOrder();
+});
+
+function opdTag(el, grp) {
+  var val = el.dataset.val;
+  var arr = opdSel[grp];
+  var idx = arr.indexOf(val);
+  if(idx >= 0) {
+    arr.splice(idx,1);
+    el.classList.remove('sel-ok','sel-warn','sel-danger');
+  } else {
+    arr.push(val);
+    var cls = grp==='s' ? 'sel-warn' : grp==='o' ? 'sel-ok' : 'sel-danger';
+    el.classList.add(cls);
+  }
+  opdUpdStatus(grp);
+  opdAutoPreview();
+}
+
+function opdUpdStatus(grp) {
+  var nd = document.getElementById('opd-nd-' + grp);
+  var st = document.getElementById('opd-st-' + grp);
+  var free = (document.getElementById('opd-' + grp + '-free') || {value:''}).value.trim();
+  var temp = grp === 'o' ? ((document.getElementById('opd-temp') || {value:''}).value) : '';
+  var hasData = opdSel[grp].length > 0 || free.length > 0 || (grp==='o' && temp.length > 0);
+  if(!nd) return;
+  if(!hasData) {
+    nd.className = 'ndot';
+    if(st){ st.textContent=''; st.className='sec-status'; }
+    return;
+  }
+  var lv = {s:'warn', o:'ok', p:'danger'}[grp];
+  nd.className = 'ndot ' + lv;
+  if(st) {
+    st.textContent = 'FILLED';
+    st.className = 'sec-status ' + (lv==='ok'?'normal': lv==='warn'?'partial':'abnormal');
+  }
+  if(grp==='o' && temp) {
+    var hint = document.getElementById('opd-temp-hint');
+    var t = parseFloat(temp);
+    if(hint) hint.textContent = t >= 38 ? 'Fever' : t >= 37.5 ? 'Low-grade' : 'Afebrile';
+  }
+}
+
+function opdBuildNote() {
+  var sections = [
+    {key:'s', label:'S', freeId:'opd-s-free', extra:null},
+    {key:'o', label:'O', freeId:'opd-o-free', extra: function(){
+      var t = (document.getElementById('opd-temp')||{value:''}).value;
+      return t ? 'body temperature ' + t + '\u2103' : '';
+    }},
+    {key:'p', label:'P', freeId:'opd-p-free', extra:null}
+  ];
+  var out = [];
+  sections.forEach(function(sec, idx) {
+    out.push(sec.label + ':');
+    var parts = opdSel[sec.key].slice();
+    if(sec.extra) { var ex = sec.extra(); if(ex) parts.push(ex); }
+    var free = (document.getElementById(sec.freeId)||{value:''}).value.trim();
+    if(free) parts.push(free);
+    if(parts.length) out.push(parts.join(', '));
+    if(idx < sections.length - 1) out.push('---');
+  });
+  return out.join('\n');
+}
+
+function opdAutoPreview() {
+  var out = document.getElementById('opd-note-out');
+  if(out) out.value = opdBuildNote();
+}
+
+function opdGenNote() {
+  var note = opdBuildNote();
+  var out = document.getElementById('opd-note-out');
+  if(out) {
+    out.value = note;
+    var sec = document.getElementById('opd-sec-out');
+    if(sec) sec.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  var icon = document.getElementById('opd-gen-icon');
+  var txt  = document.getElementById('opd-gen-txt');
+  if(icon) icon.textContent = '\u2713';
+  if(txt)  txt.textContent  = 'DONE';
+  setTimeout(function(){
+    if(icon) icon.textContent = '\u25b6';
+    if(txt)  txt.textContent  = 'GENERATE NOTE';
+  }, 1200);
+}
+
+</script>
+
+<!-- ══════════════════════════════════
+     TOOL 05 — 診斷書
+══════════════════════════════════ -->
+<div class="page" id="page-cert">
+<div class="tool-layout">
+  <aside class="sidebar">
+    <div class="sb-head"><div class="sb-label">Tool 05</div><div class="sb-title">診斷書 <span>Medical Certificate</span></div></div>
+    <nav class="nav-list">
+      <div class="nav-item" onclick="document.getElementById('csec-dx').scrollIntoView({behavior:'smooth',block:'start'})"><span>01</span> 診斷 Diagnosis</div>
+      <div class="nav-item" onclick="document.getElementById('csec-order').scrollIntoView({behavior:'smooth',block:'start'})"><span>02</span> 醫囑 Orders</div>
+    </nav>
+    <div class="sb-foot">
+      <button class="btn-clr" onclick="certClear()">✕ 清除重設</button>
+    </div>
+  </aside>
+  <main class="main-content">
+
+    <!-- 01 診斷 -->
+    <div class="section open" id="csec-dx" style="scroll-margin-top:14px">
+      <div class="sec-head" onclick="tSec('csec-dx')">
+        <span class="sec-num">01</span>
+        <span class="sec-title">診斷 <span class="sec-sub">Diagnosis — 點選片語即時帶入，亦可自行輸入</span></span>
+        <span class="sec-chev">▾</span>
+      </div>
+      <div class="sec-body">
+
+        <!-- Phrase groups -->
+        <div class="cert-phrase-group">
+          <div class="cert-phrase-group-label">肝臟 Liver</div>
+          <div class="cert-phrases">
+            <span class="cert-phrase" data-val="肝指數異常" onclick="certToggleDx(this)">肝指數異常</span>
+            <span class="cert-phrase" data-val="代謝性脂肪肝" onclick="certToggleDx(this)">代謝性脂肪肝</span>
+            <span class="cert-phrase" data-val="肝臟囊腫" onclick="certToggleDx(this)">肝臟囊腫</span>
+            <span class="cert-phrase" data-val="肝臟結節" onclick="certToggleDx(this)">肝臟結節</span>
+            <span class="cert-phrase" data-val="肝臟局部鈣化" onclick="certToggleDx(this)">肝臟局部鈣化</span>
+          </div>
+        </div>
+
+        <div class="cert-phrase-group">
+          <div class="cert-phrase-group-label">腎臟 Kidney</div>
+          <div class="cert-phrases">
+            <span class="cert-phrase" data-val="腎臟囊腫" onclick="certToggleDx(this)">腎臟囊腫</span>
+            <span class="cert-phrase" data-val="腎臟結石" onclick="certToggleDx(this)">腎臟結石</span>
+            <span class="cert-phrase" data-val="腎臟水腫" onclick="certToggleDx(this)">腎臟水腫</span>
+          </div>
+        </div>
+
+        <div class="cert-phrase-group">
+          <div class="cert-phrase-group-label">膽囊 Gallbladder</div>
+          <div class="cert-phrases">
+            <span class="cert-phrase" data-val="膽囊結石" onclick="certToggleDx(this)">膽囊結石</span>
+            <span class="cert-phrase" data-val="膽囊瘜肉" onclick="certToggleDx(this)">膽囊瘜肉</span>
+          </div>
+        </div>
+
+        <div class="cert-phrase-group">
+          <div class="cert-phrase-group-label">食道 Esophagus</div>
+          <div class="cert-phrases">
+            <span class="cert-phrase" data-val="胃食道逆流" onclick="certToggleDx(this)">胃食道逆流</span>
+            <span class="cert-phrase" data-val="逆流性食道炎" onclick="certToggleDx(this)">逆流性食道炎</span>
+            <span class="cert-phrase" data-val="吞嚥困難" onclick="certToggleDx(this)">吞嚥困難</span>
+          </div>
+        </div>
+
+        <div class="cert-phrase-group">
+          <div class="cert-phrase-group-label">胃 Stomach</div>
+          <div class="cert-phrases">
+            <span class="cert-phrase" data-val="胃炎" onclick="certToggleDx(this)">胃炎</span>
+            <span class="cert-phrase" data-val="胃炎併腸上皮化生" onclick="certToggleDx(this)">胃炎併腸上皮化生</span>
+            <span class="cert-phrase" data-val="胃幽門桿菌感染（已完成治療）" onclick="certToggleDx(this)">胃幽門桿菌感染（已完成治療）</span>
+            <span class="cert-phrase" data-val="胃潰瘍" onclick="certToggleDx(this)">胃潰瘍</span>
+            <span class="cert-phrase" data-val="胃及十二指腸潰瘍" onclick="certToggleDx(this)">胃及十二指腸潰瘍</span>
+            <span class="cert-phrase" data-val="胃瘜肉" onclick="certToggleDx(this)">胃瘜肉</span>
+            <span class="cert-phrase" data-val="胃底腺瘜肉" onclick="certToggleDx(this)">胃底腺瘜肉</span>
+          </div>
+        </div>
+
+        <div class="cert-phrase-group">
+          <div class="cert-phrase-group-label">大腸 Colon</div>
+          <div class="cert-phrases">
+            <span class="cert-phrase" data-val="大腸瘜肉" onclick="certToggleDx(this)">大腸瘜肉</span>
+            <span class="cert-phrase" data-val="大腸管狀腺瘤" onclick="certToggleDx(this)">大腸管狀腺瘤</span>
+            <span class="cert-phrase" data-val="大腸增生性瘜肉" onclick="certToggleDx(this)">大腸增生性瘜肉</span>
+            <span class="cert-phrase" data-val="痔瘡" onclick="certToggleDx(this)">痔瘡</span>
+            <span class="cert-phrase" data-val="急性腸胃炎" onclick="certToggleDx(this)">急性腸胃炎</span>
+          </div>
+        </div>
+
+        <!-- Textarea output -->
+        <div class="cert-field-wrap" style="margin-top:16px">
+          <div class="cert-field-label">
+            診斷欄位內容
+            <button class="cert-copy-btn" onclick="certCopyField('cert-dx-text',this)">⧉ 複製診斷</button>
+          </div>
+          <textarea class="cert-textarea" id="cert-dx-text" placeholder="點選上方片語自動帶入，或直接在此輸入…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 醫囑 -->
+    <div class="section open" id="csec-order" style="scroll-margin-top:14px">
+      <div class="sec-head" onclick="tSec('csec-order')">
+        <span class="sec-num">02</span>
+        <span class="sec-title">醫囑 <span class="sec-sub">Orders — 點選片語即時帶入，亦可自行輸入</span></span>
+        <span class="sec-chev">▾</span>
+      </div>
+      <div class="sec-body">
+
+        <!-- Pre-loaded base text with date -->
+        <div class="cert-pretext">
+          因上述原因於
+          <span style="display:inline-flex;align-items:center;gap:3px;font-family:var(--mono);font-size:12px">
+            <input type="number" id="cert-yr" min="100" max="200" style="width:52px;height:24px;font-family:var(--mono);font-size:12px;text-align:center;padding:0 3px;border:none;border-bottom:1px solid var(--border);background:transparent;color:var(--text);outline:none" oninput="certDateChanged()">年
+            <input type="number" id="cert-mo" min="1" max="12" style="width:36px;height:24px;font-family:var(--mono);font-size:12px;text-align:center;padding:0 3px;border:none;border-bottom:1px solid var(--border);background:transparent;color:var(--text);outline:none" oninput="certDateChanged()">月
+            <input type="number" id="cert-day" min="1" max="31" style="width:36px;height:24px;font-family:var(--mono);font-size:12px;text-align:center;padding:0 3px;border:none;border-bottom:1px solid var(--border);background:transparent;color:var(--text);outline:none" oninput="certDateChanged()">日
+          </span>
+          就醫
+          <span style="font-family:var(--mono);font-size:9px;color:var(--text-faint);margin-left:8px">（民國年 — 自動帶入今日）</span>
+        </div>
+
+        <!-- Order phrases -->
+        <div class="cert-phrase-group">
+          <div class="cert-phrase-group-label">處置項目 Procedures</div>
+          <div class="cert-phrases">
+            <span class="cert-phrase" data-val="接受評估" onclick="certToggleOrder(this)">接受評估</span>
+            <span class="cert-phrase" data-val="接受胃鏡檢查" onclick="certToggleOrder(this)">接受胃鏡檢查</span>
+            <span class="cert-phrase" data-val="接受胃鏡檢查併瘜肉切除（使用拋棄式組織切片鉗）" onclick="certToggleOrder(this)">接受胃鏡檢查併瘜肉切除（使用拋棄式組織切片鉗）</span>
+            <span class="cert-phrase" data-val="接受胃鏡檢查併瘜肉切除術" onclick="certToggleOrder(this)">接受胃鏡檢查併瘜肉切除術</span>
+            <span class="cert-phrase" data-val="接受大腸鏡檢查" onclick="certToggleOrder(this)">接受大腸鏡檢查</span>
+            <span class="cert-phrase" data-val="接受大腸鏡檢查併瘜肉切除（使用拋棄式組織切片鉗）" onclick="certToggleOrder(this)">接受大腸鏡檢查併瘜肉切除（使用拋棄式組織切片鉗）</span>
+            <span class="cert-phrase" data-val="接受大腸鏡檢查併瘜肉切除術" onclick="certToggleOrder(this)">接受大腸鏡檢查併瘜肉切除術</span>
+          </div>
+        </div>
+
+        <!-- Textarea output -->
+        <div class="cert-field-wrap" style="margin-top:16px">
+          <div class="cert-field-label">
+            醫囑欄位內容
+            <button class="cert-copy-btn" onclick="certCopyField('cert-order-text',this)">⧉ 複製醫囑</button>
+          </div>
+          <textarea class="cert-textarea" id="cert-order-text" placeholder="點選上方片語自動帶入，或直接在此輸入…"></textarea>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</div>
+
+<!-- ══════════════════════════════════
+     TOOL 04 — OPD STRUCTURED NOTE
+══════════════════════════════════ -->
+<div class="page" id="page-opd">
+<div class="tool-layout">
+  <aside class="sidebar">
+    <div class="sb-head"><div class="sb-label">Tool 04</div><div class="sb-title">OPD Note <span>門診結構化病歷</span></div></div>
+    <nav class="nav-list">
+      <div class="nav-item active" onclick="opdScroll('s')"><span>S</span> Subjective <div class="ndot" id="opd-nd-s"></div></div>
+      <div class="nav-item" onclick="opdScroll('o')"><span>O</span> Objective <div class="ndot" id="opd-nd-o"></div></div>
+      <div class="nav-item" onclick="opdScroll('p')"><span>P</span> Plan <div class="ndot" id="opd-nd-p"></div></div>
+    </nav>
+    <div class="sb-foot">
+      <button class="btn-gen" onclick="opdGenNote()"><span id="opd-gen-icon">▶</span> <span id="opd-gen-txt">GENERATE NOTE</span></button>
+      <button class="btn-clr" onclick="opdClear()">✕ CLEAR ALL</button>
+    </div>
+  </aside>
+  <main class="main-content">
+
+    <!-- Patient bar -->
+    <div class="pt-bar" style="grid-template-columns:repeat(5,1fr)">
+      <div class="pt-field"><label>Patient Name</label><input type="text" id="opd-name" placeholder="—"></div>
+      <div class="pt-field"><label>Chart No.</label><input type="text" id="opd-id" placeholder="—"></div>
+      <div class="pt-field"><label>Age / Sex</label><input type="text" id="opd-age" placeholder="e.g. 45M"></div>
+      <div class="pt-field"><label>Visit Date</label><input type="date" id="opd-date"></div>
+      <div class="pt-field"><label>Physician</label><input type="text" id="opd-doc" placeholder="—"></div>
+    </div>
+
+    <!-- S — Subjective -->
+    <div class="section open" id="opd-sec-s" style="scroll-margin-top:14px">
+      <div class="sec-head" onclick="this.closest('.section').classList.toggle('open')">
+        <span class="sec-num" style="font-size:14px;font-weight:600;min-width:22px;color:var(--accent)">S</span>
+        <span class="sec-title">Subjective <span class="sec-sub">主觀症狀</span></span>
+        <span class="sec-status" id="opd-st-s"></span>
+        <span class="sec-chev">▾</span>
+      </div>
+      <div class="sec-body">
+        <div class="fl">Symptoms — 點選複選</div>
+        <div class="fg" id="opd-fg-s">
+          <span class="ftag" data-grp="s" data-val="abdominal pain" onclick="opdTag(this,'s')">abdominal pain</span>
+          <span class="ftag" data-grp="s" data-val="post prandial fullness" onclick="opdTag(this,'s')">post prandial fullness</span>
+          <span class="ftag" data-grp="s" data-val="acid reflux" onclick="opdTag(this,'s')">acid reflux</span>
+          <span class="ftag" data-grp="s" data-val="retrosternal pain" onclick="opdTag(this,'s')">retrosternal pain</span>
+          <span class="ftag" data-grp="s" data-val="dysphagia" onclick="opdTag(this,'s')">dysphagia</span>
+          <span class="ftag" data-grp="s" data-val="easy satiety" onclick="opdTag(this,'s')">easy satiety</span>
+          <span class="ftag" data-grp="s" data-val="retching" onclick="opdTag(this,'s')">retching</span>
+          <span class="ftag" data-grp="s" data-val="hiccup" onclick="opdTag(this,'s')">hiccup</span>
+          <span class="ftag" data-grp="s" data-val="chillness, muscular pain, nausea, vomiting and diarrhea for 2 days" onclick="opdTag(this,'s')">chillness / myalgia / N/V/D ×2d</span>
+        </div>
+        <div class="ot-field" style="margin-top:6px">
+          <label>Free text</label>
+          <textarea id="opd-s-free" placeholder="其他症狀補充…" rows="2" style="min-height:40px" oninput="opdUpdStatus('s');opdAutoPreview()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- O — Objective -->
+    <div class="section open" id="opd-sec-o" style="scroll-margin-top:14px">
+      <div class="sec-head" onclick="this.closest('.section').classList.toggle('open')">
+        <span class="sec-num" style="font-size:14px;font-weight:600;min-width:22px;color:var(--ok)">O</span>
+        <span class="sec-title">Objective <span class="sec-sub">客觀檢查</span></span>
+        <span class="sec-status" id="opd-st-o"></span>
+        <span class="sec-chev">▾</span>
+      </div>
+      <div class="sec-body">
+        <div class="fl">Physical Exam Findings</div>
+        <div class="fg" id="opd-fg-o">
+          <span class="ftag" data-grp="o" data-val="no fever" onclick="opdTag(this,'o')">no fever</span>
+          <span class="ftag" data-grp="o" data-val="icteric sclera" onclick="opdTag(this,'o')">icteric sclera</span>
+          <span class="ftag" data-grp="o" data-val="pale conjunctivae" onclick="opdTag(this,'o')">pale conjunctivae</span>
+          <span class="ftag" data-grp="o" data-val="no tenderness" onclick="opdTag(this,'o')">no tenderness</span>
+          <span class="ftag" data-grp="o" data-val="equivocal tenderness" onclick="opdTag(this,'o')">equivocal tenderness</span>
+          <span class="ftag" data-grp="o" data-val="hyperactive bowel sound" onclick="opdTag(this,'o')">hyperactive BS</span>
+          <span class="ftag" data-grp="o" data-val="normoactive bowel sound" onclick="opdTag(this,'o')">normoactive BS</span>
+          <span class="ftag" data-grp="o" data-val="hypoactive bowel sound" onclick="opdTag(this,'o')">hypoactive BS</span>
+        </div>
+        <!-- Body temp inline -->
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <span style="font-family:var(--mono);font-size:10px;color:var(--text-faint);letter-spacing:.08em">BODY TEMP</span>
+          <div style="display:flex;align-items:center;gap:4px">
+            <input type="number" step="0.1" min="34" max="42" id="opd-temp" placeholder="—"
+              style="width:64px;height:28px;font-family:var(--mono);font-size:13px;text-align:center;
+                     padding:0 4px;border:1px solid var(--border);border-radius:3px;background:var(--bg);outline:none"
+              oninput="opdUpdStatus('o');opdAutoPreview()">
+            <span style="font-size:12px;color:var(--text-muted)">℃</span>
+          </div>
+          <span id="opd-temp-hint" style="font-family:var(--mono);font-size:10px;color:var(--text-faint)"></span>
+        </div>
+        <div class="ot-field" style="margin-top:8px">
+          <label>Free text</label>
+          <textarea id="opd-o-free" placeholder="其他理學檢查補充…" rows="2" style="min-height:40px" oninput="opdUpdStatus('o');opdAutoPreview()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- P — Plan -->
+    <div class="section open" id="opd-sec-p" style="scroll-margin-top:14px">
+      <div class="sec-head" onclick="this.closest('.section').classList.toggle('open')">
+        <span class="sec-num" style="font-size:14px;font-weight:600;min-width:22px;color:var(--warn)">P</span>
+        <span class="sec-title">Plan <span class="sec-sub">處置計畫</span></span>
+        <span class="sec-status" id="opd-st-p"></span>
+        <span class="sec-chev">▾</span>
+      </div>
+      <div class="sec-body">
+        <div class="fl">Management Plan — 點選複選</div>
+        <div class="fg" id="opd-fg-p">
+          <span class="ftag" data-grp="p" data-val="Abdominal symptoms workup with echo." onclick="opdTag(this,'p')">Echo workup</span>
+          <span class="ftag" data-grp="p" data-val="Upper-GI symptoms workup with EGD." onclick="opdTag(this,'p')">EGD workup</span>
+          <span class="ftag" data-grp="p" data-val="Lower-GI workup with CFS." onclick="opdTag(this,'p')">CFS workup</span>
+          <span class="ftag" data-grp="p" data-val="Proton pump inhibitor (PPI) to treat reflux esophagitis." onclick="opdTag(this,'p')">PPI for reflux</span>
+          <span class="ftag" data-grp="p" data-val="Medications for symptoms relief." onclick="opdTag(this,'p')">Symptom meds</span>
+          <span class="ftag" data-grp="p" data-val="Pathology workup to rule out neoplastic change." onclick="opdTag(this,'p')">Pathology workup</span>
+          <span class="ftag" data-grp="p" data-val="Helicobacter pylori eradication therapy." onclick="opdTag(this,'p')">H. pylori eradication</span>
+          <span class="ftag" data-grp="p" data-val="Check stool routine exam." onclick="opdTag(this,'p')">Stool routine</span>
+          <span class="ftag" data-grp="p" data-val="Check liver enzyme and tumor marker, regular follow-up." onclick="opdTag(this,'p')">LFT + tumor marker</span>
+          <span class="ftag" data-grp="p" data-val="Health education and life style modification." onclick="opdTag(this,'p')">Health education</span>
+          <span class="ftag" data-grp="p" data-val="Suggest return clinic as soon as possible if symptoms persisted." onclick="opdTag(this,'p')">Return if symptoms persist</span>
+        </div>
+        <div class="ot-field" style="margin-top:6px">
+          <label>Free text</label>
+          <textarea id="opd-p-free" placeholder="其他處置補充…" rows="2" style="min-height:40px" oninput="opdUpdStatus('p');opdAutoPreview()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- OUTPUT NOTE -->
+    <div class="section open" id="opd-sec-out" style="margin-top:4px;scroll-margin-top:14px">
+      <div class="sec-head" style="cursor:default;background:var(--text)">
+        <span class="sec-num" style="color:rgba(255,255,255,.4)">OUT</span>
+        <span class="sec-title" style="color:#fff;font-size:13px">Generated Note</span>
+        <button onclick="opdCopyNote()" id="opd-copy-btn"
+          style="padding:3px 10px;border:1px solid rgba(255,255,255,.25);border-radius:3px;
+                 background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-family:var(--mono);
+                 font-size:9px;letter-spacing:.06em;cursor:pointer;margin-left:auto">⧉ COPY</button>
+      </div>
+      <div class="sec-body" style="padding:0">
+        <textarea id="opd-note-out" readonly
+          style="width:100%;min-height:220px;font-family:var(--mono);font-size:12.5px;
+                 line-height:1.9;padding:16px 18px;border:none;outline:none;resize:vertical;
+                 background:var(--bg);color:var(--text)"
+          placeholder="點選上方片語後按 GENERATE NOTE，或選完後即時預覽…"></textarea>
+      </div>
+    </div>
+
+  </main>
+</div>
+</div>
+
+
+</body>
+</html>
