@@ -95,12 +95,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 .ndot.ok{background:#4ade80}.ndot.warn{background:#fbbf24}.ndot.danger{background:#f87171}
 .sb-foot{padding:12px 14px;border-top:1px solid rgba(255,255,255,.1)}
 .btn-gen{width:100%;padding:10px;background:#fff;color:var(--text);border:none;border-radius:4px;
-  font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;cursor:pointer;
+  font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.06em;cursor:pointer;
   transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:7px}
 .btn-gen:hover{opacity:.88}
 .btn-gen:disabled{opacity:.32;cursor:not-allowed}
 .btn-clr{width:100%;padding:7px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.55);
-  border:1px solid rgba(255,255,255,.1);border-radius:4px;font-family:var(--mono);font-size:10px;
+  border:1px solid rgba(255,255,255,.1);border-radius:4px;font-family:var(--mono);font-size:12px;
   letter-spacing:.06em;cursor:pointer;transition:all .12s}
 .btn-clr:hover{background:rgba(255,255,255,.13);color:#fff}
 .main-content{padding:26px 30px;overflow-y:auto}
@@ -137,7 +137,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 .fl{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--text-faint);
   text-transform:uppercase;margin-bottom:7px}
 .fg{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px}
-.ftag{font-size:12px;padding:4px 10px;border-radius:3px;border:1px solid var(--border);
+.ftag{font-size:14px;padding:4px 10px;border-radius:3px;border:1px solid var(--border);
   color:var(--text-muted);cursor:pointer;background:var(--bg);transition:all .1s;line-height:1}
 .ftag:hover{border-color:var(--border-strong);color:var(--text)}
 .ftag.sel-ok{background:var(--ok-light);color:var(--ok);border-color:#a8d5b5}
@@ -185,7 +185,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 
 /* TI-RADS nodule */
 .nodule-tabs{display:flex;gap:5px;margin-bottom:11px;flex-wrap:wrap}
-.nodule-tab{padding:5px 12px;border:1px solid var(--border);border-radius:3px;font-size:12px;
+.nodule-tab{padding:5px 12px;border:1px solid var(--border);border-radius:3px;font-size:14px;
   cursor:pointer;background:var(--bg);color:var(--text-muted);font-family:var(--mono);
   letter-spacing:.04em;transition:all .12s}
 .nodule-tab.active{background:var(--text);color:#fff;border-color:var(--text)}
@@ -211,15 +211,18 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 .report-out{display:none;margin-top:13px;background:var(--surface);border:1px solid var(--border);
   border-radius:6px;overflow:hidden}
 .report-out.vis{display:block}
-.rep-head{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;
+.rep-head{display:flex;align-items:center;padding:10px 15px;
   background:var(--text);color:#fff}
-.rep-head span{font-family:var(--mono);font-size:10px;letter-spacing:.08em}
-.btn-copy{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18);
-  border-radius:3px;font-family:var(--mono);font-size:9px;padding:3px 9px;cursor:pointer;
-  letter-spacing:.06em;transition:background .12s}
-.btn-copy:hover{background:rgba(255,255,255,.22)}
-.rep-content{padding:16px 18px;font-family:var(--mono);font-size:12px;line-height:1.9;
-  color:var(--text);white-space:pre-wrap;min-height:60px}
+.rep-head span{font-family:var(--mono);font-size:12px;letter-spacing:.08em;white-space:nowrap}
+.btn-copy{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.25);
+  border-radius:3px;font-family:var(--mono);font-size:11px;padding:4px 12px;cursor:pointer;
+  letter-spacing:.06em;transition:background .12s;white-space:nowrap;margin-left:0.6em;flex-shrink:0}
+.btn-copy:hover{background:rgba(255,255,255,.28)}
+.rep-content{display:block;width:100%;padding:16px 18px;font-family:var(--mono);font-size:12px;
+  line-height:1.9;color:var(--text);white-space:pre-wrap;min-height:50vh;
+  background:var(--surface);border:none;outline:none;resize:vertical;
+  border-top:1px solid var(--border)}
+.rep-content:focus{background:#fffef8}
 .spinner{display:inline-block;width:11px;height:11px;border:2px solid rgba(0,0,0,.12);
   border-top-color:var(--text);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -251,14 +254,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 .cert-phrase-group{margin-bottom:14px}
 .cert-phrase-group-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--text-faint);text-transform:uppercase;margin-bottom:6px}
 .cert-phrases{display:flex;flex-wrap:wrap;gap:5px}
-.cert-phrase{font-size:12px;padding:4px 11px;border-radius:3px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:var(--bg);transition:all .12s;line-height:1;user-select:none}
+.cert-phrase{font-size:14px;padding:4px 11px;border-radius:3px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;background:var(--bg);transition:all .12s;line-height:1;user-select:none}
 .cert-phrase:hover{border-color:var(--accent);color:var(--accent);background:#f0f4fb}
 .cert-phrase.sel{background:var(--ok-light);color:var(--ok);border-color:#a8d5b5}
 .cert-date-inline{display:inline-flex;align-items:center;gap:3px;font-family:var(--sans);font-size:13px;color:var(--text-muted)}
 .cert-date-inline input{width:52px;height:24px;font-family:var(--mono);font-size:12px;text-align:center;padding:0 4px;border:none;border-bottom:1px solid var(--border);background:transparent;color:var(--text);outline:none}
 .cert-date-inline input:focus{border-bottom-color:var(--accent)}
 .cert-pretext{font-size:12px;color:var(--text-muted);padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;margin-bottom:10px;line-height:1.7}
-/* DEPLOY BANNER */
 .deploy-banner{position:fixed;top:52px;left:0;right:0;z-index:190;
   background:#7c3a00;color:#fff;padding:10px 20px;font-family:var(--mono);font-size:11px;
   letter-spacing:.04em;display:flex;align-items:center;gap:12px;line-height:1.6;
@@ -272,18 +274,8 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
 .deploy-banner .dclose{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.5);
   cursor:pointer;font-size:16px;line-height:1;padding:0 4px}
 .deploy-banner .dclose:hover{color:#fff}
-
-/* API KEY INPUT IN NAV */
-.nav-apikey-wrap{display:flex;align-items:center;gap:6px;margin-left:8px;
-  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
-  border-radius:4px;padding:4px 10px}
-.nav-apikey-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;
-  color:rgba(255,255,255,.4);white-space:nowrap}
-#nav-apikey-input{background:transparent;border:none;outline:none;
-  font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.9);
-  width:220px;letter-spacing:.04em}
-#nav-apikey-input::placeholder{color:rgba(255,255,255,.25);font-size:10px}
-.nav-apikey-status{font-size:12px;width:14px;text-align:center}
+/* OPD ROW SEPARATOR */
+.opd-row-sep{width:100%;height:1px;background:var(--border);margin:4px 0}
 </style>
 </head>
 <body>
@@ -317,30 +309,14 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
     </div>
   </div>
   <button class="nav-home" onclick="showCover()">⌂ HOME</button>
-  <div class="nav-apikey-wrap" id="nav-apikey-wrap">
-    <span class="nav-apikey-label">API KEY</span>
-    <input type="password" id="nav-apikey-input"
-      placeholder="sk-ant-api03-..."
-      oninput="navApiKeyChanged()"
-      autocomplete="off" spellcheck="false">
-    <span class="nav-apikey-status" id="nav-apikey-status"></span>
-  </div>
 </nav>
-
-<!-- Status banner -->
-<div class="deploy-banner hidden" id="deploy-banner">
-  <span>⚠ <strong>請先輸入 Anthropic API Key</strong>（右上角輸入欄，格式：sk-ant-...），AI 報告功能才能使用。
-  API Key 僅存在瀏覽器工作階段記憶體，不會上傳或儲存。</span>
-  <button class="dbtn" onclick="closeBanner()">✕</button>
-</div>
 
 
 <!-- ══ COVER ══ -->
 <div class="page visible" id="page-cover">
   <div class="cover">
-    <div class="cover-eye">YT Clinic · Kaohsiung · Gastroenterology &amp; Hepatology</div>
-    <h1><strong>Clinical Report</strong><br>Hub</h1>
-    <p class="cover-sub">結構化病歷工具集 — 快速產生標準化醫療報告，整合 AI 輔助結論生成</p>
+    <div class="cover-eye" style="font-size:12px">YT Lin · Gastroenterology &amp; Hepatology</div>
+    <h1><strong>Clinical Report</strong> Hub</h1>
     <div class="tool-cards">
       <div class="tc" onclick="showTool('abd')">
         <span class="tc-tag av">AVAILABLE</span><div class="tc-num">01</div>
@@ -539,7 +515,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
         <div class="ot-field"><label>Other findings</label><textarea id="aot-aoth" placeholder="e.g. small perihepatic ascites..."></textarea></div>
       </div>
     </div>
-    <div class="report-out" id="abd-rpt"><div class="rep-head"><span>ABDOMINAL ULTRASOUND REPORT</span><button class="btn-copy" onclick="copyRpt('abd-rtxt')">⧉ COPY</button></div><div class="rep-content" id="abd-rtxt"></div></div>
+    <div class="report-out" id="abd-rpt"><div class="rep-head"><span>ABDOMINAL ULTRASOUND REPORT&nbsp;&nbsp;<button class="btn-copy" onclick="copyRpt('abd-rtxt')">⧉ COPY</button></span></div><textarea class="rep-content" id="abd-rtxt" spellcheck="false"></textarea></div>
   </main>
 </div>
 </div>
@@ -620,7 +596,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
         <div class="ot-field"><label>Other findings</label><textarea id="tot-lymph" placeholder="e.g. level III right cervical node 1.2cm..."></textarea></div>
       </div>
     </div>
-    <div class="report-out" id="thy-rpt"><div class="rep-head"><span>THYROID ULTRASOUND REPORT (TI-RADS)</span><button class="btn-copy" onclick="copyRpt('thy-rtxt')">⧉ COPY</button></div><div class="rep-content" id="thy-rtxt"></div></div>
+    <div class="report-out" id="thy-rpt"><div class="rep-head"><span>THYROID ULTRASOUND REPORT (TI-RADS)&nbsp;&nbsp;<button class="btn-copy" onclick="copyRpt('thy-rtxt')">⧉ COPY</button></span></div><textarea class="rep-content" id="thy-rtxt" spellcheck="false"></textarea></div>
   </main>
 </div>
 </div>
@@ -793,7 +769,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
       </div>
     </div>
 
-    <div class="report-out" id="car-rpt"><div class="rep-head"><span>CAROTID ULTRASOUND REPORT</span><button class="btn-copy" onclick="copyRpt('car-rtxt')">⧉ COPY</button></div><div class="rep-content" id="car-rtxt"></div></div>
+    <div class="report-out" id="car-rpt"><div class="rep-head"><span>CAROTID ULTRASOUND REPORT&nbsp;&nbsp;<button class="btn-copy" onclick="copyRpt('car-rtxt')">⧉ COPY</button></span></div><textarea class="rep-content" id="car-rtxt" spellcheck="false"></textarea></div>
   </main>
 </div>
 </div>
@@ -807,86 +783,215 @@ function showCover(){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('visible','with-banner'));
   const p=document.getElementById('page-cover');
   p.classList.add('visible');
-  if(!document.getElementById('deploy-banner').classList.contains('hidden')) p.classList.add('with-banner');
   document.getElementById('dd').classList.remove('open');
 }
 function showTool(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('visible','with-banner'));
   const p=document.getElementById('page-'+id);
   p.classList.add('visible');
-  if(!document.getElementById('deploy-banner').classList.contains('hidden')) p.classList.add('with-banner');
   document.getElementById('dd').classList.remove('open');
 }
 function tSec(id){document.getElementById(id).classList.toggle('open')}
 
-// ── API KEY ──
-// ★ 在下方引號內填入您的 Anthropic API Key，存檔後部署即可零設定使用
-var EMBEDDED_API_KEY = ''; // For direct embedding (optional)
 
-function getApiKey(){
-  var stored = sessionStorage.getItem('yt_api_key') || '';
-  return stored.trim() || EMBEDDED_API_KEY.trim();
+// ── LOCAL REPORT GENERATION (no API required) ──
+// All reports are generated locally using structured templates.
+
+function ensureDot(s){s=(s||'').trim();return s&&!/[.!?]$/.test(s)?s+'.':s;}
+
+function localAbdReport(n, d, doc, findings) {
+  var sections = {liver:'',gb:'',pan:'',spl:'',kid:'',aoth:''};
+  var lines = findings.split('\n');
+  lines.forEach(function(line){
+    if(line.startsWith('Liver:')) sections.liver = line.replace('Liver:','').trim();
+    else if(line.startsWith('Gallbladder')) sections.gb = line.replace(/Gallbladder[^:]*:/,'').trim();
+    else if(line.startsWith('Pancreas:')) sections.pan = line.replace('Pancreas:','').trim();
+    else if(line.startsWith('Spleen:')) sections.spl = line.replace('Spleen:','').trim();
+    else if(line.startsWith('Kidneys:')) sections.kid = line.replace('Kidneys:','').trim();
+    else if(line.startsWith('Others:')) sections.aoth = line.replace('Others:','').trim();
+  });
+
+  // Build impression
+  var abnormal = [];
+  var noteItems = [];
+  if(sections.liver && !/normal|unremarkable/i.test(sections.liver)) abnormal.push('liver: ' + sections.liver.split(';')[0]);
+  if(sections.gb && !/normal|unremarkable/i.test(sections.gb)) abnormal.push('gallbladder/bile duct: ' + sections.gb.split(';')[0]);
+  if(sections.pan && !/unremarkable/i.test(sections.pan)) noteItems.push('pancreas: ' + sections.pan.split(';')[0]);
+  if(sections.spl && !/normal/i.test(sections.spl)) noteItems.push('spleen: ' + sections.spl.split(';')[0]);
+  if(sections.kid && !/unremarkable/i.test(sections.kid)) noteItems.push('kidneys: ' + sections.kid.split(';')[0]);
+  var allFindings = abnormal.concat(noteItems);
+
+  var impression = allFindings.length
+    ? '1. ' + allFindings.map(function(f,i){var s=f.charAt(0).toUpperCase()+f.slice(1);if(!/[.!?]$/.test(s))s+='.';return (i===0?'':'\n'+(i+1)+'. ') + s;}).join('')
+    : '1. No significant abnormality detected on this examination.';
+
+  var reco = allFindings.length
+    ? 'Clinical correlation recommended. Follow-up or further evaluation as clinically indicated.'
+    : 'Routine follow-up as clinically indicated.';
+
+  var headerParts = [];
+  if(n && n !== '—') headerParts.push('Patient: ' + n);
+  if(d && d !== '—') headerParts.push('Date: ' + d);
+  if(doc && doc !== '—') headerParts.push('Physician: ' + doc);
+  var header = headerParts.length ? headerParts.join('  ') : (d && d !== '—' ? 'Date: ' + d : '');
+
+  return [
+    'ABDOMINAL ULTRASOUND REPORT',
+    header,
+    '',
+    'LIVER:',
+    ensureDot(sections.liver || 'Normal size and echogenicity. No focal lesion identified.'),
+    '',
+    'GALLBLADDER AND BILE DUCT:',
+    ensureDot(sections.gb || 'Gallbladder normal. CBD within normal limits.'),
+    '',
+    'PANCREAS:',
+    ensureDot(sections.pan || 'Pancreas unremarkable.'),
+    '',
+    'SPLEEN:',
+    ensureDot(sections.spl || 'Spleen normal in size and echotexture.'),
+    '',
+    'KIDNEYS:',
+    ensureDot(sections.kid || 'Bilateral kidneys unremarkable.'),
+    '',
+    'OTHER FINDINGS:',
+    ensureDot(sections.aoth || 'No ascites. Aorta normal caliber.'),
+    '',
+    'IMPRESSION:',
+    impression,
+    '',
+    'RECOMMENDATION:',
+    reco
+  ].join('\n');
 }
 
-// No-op stubs (UI removed)
-function navApiKeyChanged(){
-  var val = (document.getElementById('nav-apikey-input')||{value:''}).value.trim();
-  if(val) sessionStorage.setItem('yt_api_key', val);
-  else sessionStorage.removeItem('yt_api_key');
-  var st = document.getElementById('nav-apikey-status');
-  if(st) st.textContent = val ? '✓' : '';
-  if(val && document.getElementById('deploy-banner') &&
-     !document.getElementById('deploy-banner').classList.contains('hidden')){
-    closeBanner();
+function localThyReport(n, d, doc, findings) {
+  var gland = '', nodules = '', lymph = '';
+  var inNod = false;
+  var nodLines = [];
+  findings.split('\n').forEach(function(line){
+    if(line.startsWith('Thyroid gland:')) { gland = line.replace('Thyroid gland:','').trim(); inNod=false; }
+    else if(line.startsWith('Nodules:')) { inNod=true; }
+    else if(line.startsWith('Lymph nodes:')) { lymph = line.replace('Lymph nodes:','').trim(); inNod=false; }
+    else if(inNod && line.trim()) { nodLines.push(line.trim()); }
+  });
+  nodules = nodLines.join('\n') || 'No thyroid nodule identified.';
+
+  var hasNod = nodLines.length > 0 && !/no thyroid nodule/i.test(nodLines[0]);
+  var impression, reco;
+  function ensurePeriod(s){ s=s.trim(); return (/[.!?]$/.test(s)?s:s+'.'); }
+  if(!hasNod){
+    var glandPart = (gland && !/normal/i.test(gland)) ? ensurePeriod(gland.split(';')[0].charAt(0).toUpperCase()+gland.split(';')[0].slice(1)) : 'No significant abnormality of the thyroid gland.';
+    impression = '1. ' + glandPart + '\n2. No thyroid nodule identified.';
+    reco = 'Routine follow-up as clinically indicated.';
+  } else {
+    // Extract TR category from nodule lines
+    var trMatches = nodLines.map(function(l){ var m=l.match(/TR(\d)/); return m?'TR'+m[1]:null; }).filter(Boolean);
+    var highestTR = trMatches.sort().reverse()[0] || 'TR3';
+    impression = '1. Thyroid nodule(s) identified. Highest ACR TI-RADS category: ' + highestTR + '.';
+    if(lymph && !/unremarkable|no cervical/i.test(lymph)) impression += '\n2. ' + ensurePeriod(lymph.charAt(0).toUpperCase()+lymph.slice(1));
+    reco = highestTR >= 'TR4'
+      ? 'FNA biopsy recommended per ACR TI-RADS 2017 guidelines based on nodule size and category. Clinical correlation advised.'
+      : 'Ultrasound surveillance per ACR TI-RADS 2017 guidelines. Clinical correlation advised.';
   }
-}
-function apikeyChanged(){} // legacy no-op
 
-function closeBanner(){
-  document.getElementById('deploy-banner').classList.add('hidden');
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('with-banner'));
+  var headerPartsT = [];
+  if(n && n !== '—') headerPartsT.push('Patient: ' + n);
+  if(d && d !== '—') headerPartsT.push('Date: ' + d);
+  if(doc && doc !== '—') headerPartsT.push('Physician: ' + doc);
+  var headerT = headerPartsT.length ? headerPartsT.join('  ') : (d && d !== '—' ? 'Date: ' + d : '');
+
+  return [
+    'THYROID ULTRASOUND REPORT',
+    headerT,
+    '',
+    'THYROID GLAND:',
+    ensureDot(gland || 'Normal size, echogenicity, and homogeneous texture.'),
+    '',
+    'THYROID NODULES:',
+    ensureDot(nodules),
+    '',
+    'CERVICAL LYMPH NODES:',
+    ensureDot(lymph || 'No cervical lymphadenopathy.'),
+    '',
+    'IMPRESSION:',
+    impression,
+    '',
+    'RECOMMENDATION:',
+    reco
+  ].join('\n');
 }
 
-function showBanner(){
-  document.getElementById('deploy-banner').classList.remove('hidden');
-  document.querySelectorAll('.page.visible').forEach(p=>p.classList.add('with-banner'));
-}
-function buildHeaders(){
-  const k=getApiKey();
-  const h={'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'};
-  if(k) h['x-api-key']=k;
-  return h;
-}
+function localCarReport(n, d, doc, findings) {
+  var imt='', plaque='', flow='', vert='';
+  var section = '';
+  findings.split('\n').forEach(function(line){
+    if(line.startsWith('IMT:')) { section='imt'; imt=line.replace('IMT:','').trim(); }
+    else if(line.startsWith('Plaque:')) { section='plaque'; plaque=line.replace('Plaque:','').trim(); }
+    else if(line.startsWith('Flow')) { section='flow'; flow=line.replace(/Flow[^:]*:/,'').trim(); }
+    else if(line.startsWith('Vertebral')) { section='vert'; vert=line.replace(/Vertebral[^:]*:/,'').trim(); }
+    else if(line.trim()){
+      if(section==='imt') imt += (imt?' ':'') + line.trim();
+      else if(section==='plaque') plaque += (plaque?'\n':'') + line.trim();
+      else if(section==='flow') flow += (flow?' ':'') + line.trim();
+      else if(section==='vert') vert += (vert?' ':'') + line.trim();
+    }
+  });
 
+  var hasPlaque = plaque && !/no plaque/i.test(plaque);
+  var imtRisk = /high risk|>1\.0|increased IMT/i.test(imt) ? 'high'
+              : /borderline|0\.8|mildly increased/i.test(imt) ? 'borderline' : 'normal';
+  var stenosis = /≥70%|near-occlusion/i.test(plaque) ? 'severe'
+               : /50-69%/i.test(plaque) ? 'moderate' : 'mild';
 
-// ── UNIVERSAL API CALL ──
-function callAPI(payload, onSuccess, onError) {
-  const k = getApiKey();
-  if(!k){
-    showBanner();
-    onError('⚠ 尚未設定 API Key。\n\n請將此 HTML 部署到網頁伺服器（建議：drop.netlify.com）\n並在 JS 原始碼中的 EMBEDDED_API_KEY 填入您的 Anthropic API Key（格式：sk-ant-...）。');
-    return;
+  var impression = [];
+  if(imtRisk==='high') impression.push('Increased carotid IMT indicating significant subclinical atherosclerosis and elevated cardiovascular risk.');
+  else if(imtRisk==='borderline') impression.push('Borderline carotid IMT (0.8–1.0 mm). Intermediate cardiovascular risk.');
+  else impression.push('Carotid IMT within normal limits bilaterally.');
+  if(hasPlaque){
+    if(stenosis==='severe') impression.push('Atherosclerotic plaque with severe stenosis (≥70%) identified. Urgent vascular surgery consultation recommended.');
+    else if(stenosis==='moderate') impression.push('Atherosclerotic plaque with moderate stenosis (50–69%) identified. Vascular consultation recommended.');
+    else impression.push('Atherosclerotic plaque identified with less than 50% stenosis.');
+  } else {
+    impression.push('No significant carotid plaque identified.');
   }
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST','https://api.anthropic.com/v1/messages',true);
-  xhr.setRequestHeader('Content-Type','application/json');
-  xhr.setRequestHeader('anthropic-dangerous-direct-browser-access','true');
-  xhr.setRequestHeader('x-api-key', k);
-  xhr.timeout = 60000;
-  xhr.onload = function(){
-    try{
-      const data = JSON.parse(xhr.responseText);
-      if(xhr.status>=200 && xhr.status<300){
-        if(data.content?.length) onSuccess(data.content.map(x=>x.text||'').join(''));
-        else onError('No content returned.\n'+JSON.stringify(data));
-      } else {
-        onError('API Error '+xhr.status+': '+(data.error?.message||JSON.stringify(data)));
-      }
-    }catch(e){onError('JSON parse error: '+e.message+'\nRaw: '+xhr.responseText.slice(0,200));}
-  };
-  xhr.onerror = function(){ onError('Network error. Please check your API Key and connection.'); };
-  xhr.ontimeout = function(){onError('Request timeout (60s) — 請稍後再試。');};
-  xhr.send(JSON.stringify(payload));
+  if(flow && !/normal/i.test(flow)) impression.push('Abnormal carotid flow noted: ' + flow.split(';')[0] + '.');
+  if(vert && !/normal/i.test(vert)) impression.push('Vertebral artery abnormality noted: ' + vert.split(';')[0] + '.');
+
+  var reco = imtRisk==='high' || hasPlaque
+    ? 'Cardiovascular risk factor modification strongly recommended (lipid management, blood pressure control, lifestyle modification). Vascular surgery or cardiology referral as clinically indicated.'
+    : 'Continue cardiovascular risk factor management. Repeat carotid ultrasound in 1–3 years as clinically indicated.';
+
+  var headerPartsC = [];
+  if(n && n !== '—') headerPartsC.push('Patient: ' + n);
+  if(d && d !== '—') headerPartsC.push('Date: ' + d);
+  if(doc && doc !== '—') headerPartsC.push('Physician: ' + doc);
+  var headerC = headerPartsC.length ? headerPartsC.join('  ') : (d && d !== '—' ? 'Date: ' + d : '');
+
+  function dotLines(s){return (s||'').split('\n').map(ensureDot).join('\n');}
+
+  return [
+    'CAROTID ULTRASOUND REPORT',
+    headerC,
+    '',
+    'INTIMA-MEDIA THICKNESS (IMT):',
+    dotLines(imt || 'IMT within normal limits bilaterally.'),
+    '',
+    'PLAQUE:',
+    dotLines(plaque || 'No plaque identified.'),
+    '',
+    'FLOW AND STENOSIS:',
+    dotLines(flow || 'Right and left carotid flow normal. No significant stenosis.'),
+    '',
+    'VERTEBRAL ARTERIES:',
+    dotLines(vert || 'Bilateral vertebral arteries with normal flow.'),
+    '',
+    'IMPRESSION:',
+    impression.map(function(s,i){var t=s.trim();if(!/[.!?]$/.test(t))t+='.';return (i+1)+'. '+t;}).join('\n'),
+    '',
+    'RECOMMENDATION:',
+    reco
+  ].join('\n');
 }
 
 // ── INIT ──
@@ -896,16 +1001,6 @@ window.addEventListener('DOMContentLoaded',()=>{
   initAbd(); initThy(); initCar();
   certInitDate(); certRenderOrder();
   // Show banner if no API key embedded
-  // Restore saved key to input on load
-  var savedKey = sessionStorage.getItem('yt_api_key') || '';
-  if(savedKey){
-    var inp = document.getElementById('nav-apikey-input');
-    if(inp){ inp.value = savedKey;
-      var st2 = document.getElementById('nav-apikey-status');
-      if(st2) st2.textContent = '✓';
-    }
-  }
-  if(!savedKey && !EMBEDDED_API_KEY.trim()) showBanner();
 });
 
 // ════════════════════════════════════
@@ -948,18 +1043,15 @@ function abdCollect(){
     return `${l}: ${[...ts,...(ex?[ex]:[])].join('; ')||'unremarkable'}`;
   }).join('\n');
 }
-async function abdGenerate(){
+function abdGenerate(){
   const b=document.getElementById('abd-gbtn'),bi=document.getElementById('abd-bi'),bt=document.getElementById('abd-bt');
-  b.disabled=true;bi.innerHTML='<span class="spinner"><\/span>';bt.textContent='GENERATING...';
-  const n=document.getElementById('abd-n').value||'—',d=document.getElementById('abd-d').value||'—',doc=document.getElementById('abd-doc').value||'—';
-  const prompt=`You are a radiologist writing a formal abdominal ultrasound report.\nPatient: ${n} | Date: ${d} | Physician: ${doc}\n\nFindings:\n${abdCollect()}\n\nWrite a concise professional English report using EXACTLY this structure:\n\nABDOMINAL ULTRASOUND REPORT\nPatient: ${n}  Date: ${d}  Physician: ${doc}\n\nLIVER:\nGALLBLADDER AND BILE DUCT:\nPANCREAS:\nSPLEEN:\nKIDNEYS:\nOTHER FINDINGS:\nIMPRESSION:\nRECOMMENDATION:\n\nRules: Expand abbreviations. Standard radiological English. Do not add unlisted findings. Do NOT add any signature line, footer, date stamp, or closing statement after RECOMMENDATION.`;
+  b.disabled=true;bi.textContent='…';bt.textContent='GENERATING...';
+  const n=document.getElementById('abd-n').value.trim(),d=document.getElementById('abd-d').value||'',doc=document.getElementById('abd-doc').value.trim();
   const oe=document.getElementById('abd-rpt'),te=document.getElementById('abd-rtxt');
-  oe.classList.add('vis');te.textContent='Generating...';
-  const payload={model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]};
-  callAPI(payload,
-    text=>{te.textContent=text;oe.scrollIntoView({behavior:'smooth',block:'start'});},
-    err=>{te.textContent=err;}
-  );
+  oe.classList.add('vis');
+  const text = localAbdReport(n, d, doc, abdCollect());
+  te.value=text;
+  oe.scrollIntoView({behavior:'smooth',block:'start'});
   b.disabled=false;bi.textContent='▶';bt.textContent='GENERATE REPORT';
 }
 
@@ -1091,18 +1183,15 @@ function thyCollect(){
   }).join('\n');
   return `Thyroid gland: ${[...g,...(gg?[gg]:[])].join('; ')||'normal'}\nNodules:\n${nodLines}\nLymph nodes: ${[...l,...(ll?[ll]:[])].join('; ')||'unremarkable'}`;
 }
-async function thyGenerate(){
+function thyGenerate(){
   const b=document.getElementById('thy-gbtn'),bi=document.getElementById('thy-bi'),bt=document.getElementById('thy-bt');
-  b.disabled=true;bi.innerHTML='<span class="spinner"><\/span>';bt.textContent='GENERATING...';
-  const n=document.getElementById('thy-n').value||'—',d=document.getElementById('thy-d').value||'—',doc=document.getElementById('thy-doc').value||'—';
-  const prompt=`You are an endocrine radiologist using ACR TI-RADS 2017.\nPatient: ${n} | Date: ${d} | Physician: ${doc}\n\nFindings:\n${thyCollect()}\n\nWrite a professional English thyroid ultrasound report using EXACTLY this structure:\n\nTHYROID ULTRASOUND REPORT\nPatient: ${n}  Date: ${d}  Physician: ${doc}\n\nTHYROID GLAND:\nTHYROID NODULES:\nCERVICAL LYMPH NODES:\nIMPRESSION:\nRECOMMENDATION:\n\nApply ACR TI-RADS 2017 FNA criteria. Standard radiological English. Do NOT add any signature line, footer, date stamp, or closing statement after RECOMMENDATION.`;
+  b.disabled=true;bi.textContent='…';bt.textContent='GENERATING...';
+  const n=document.getElementById('thy-n').value.trim(),d=document.getElementById('thy-d').value||'',doc=document.getElementById('thy-doc').value.trim();
   const oe=document.getElementById('thy-rpt'),te=document.getElementById('thy-rtxt');
-  oe.classList.add('vis');te.textContent='Generating...';
-  const payload={model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]};
-  callAPI(payload,
-    text=>{te.textContent=text;oe.scrollIntoView({behavior:'smooth',block:'start'});},
-    err=>{te.textContent=err;}
-  );
+  oe.classList.add('vis');
+  const text = localThyReport(n, d, doc, thyCollect());
+  te.value=text;
+  oe.scrollIntoView({behavior:'smooth',block:'start'});
   b.disabled=false;bi.textContent='▶';bt.textContent='GENERATE REPORT';
 }
 
@@ -1298,18 +1387,15 @@ function carCollect(){
   ].join('\n\n');
 }
 
-async function carGenerate(){
+function carGenerate(){
   const b=document.getElementById('car-gbtn'),bi=document.getElementById('car-bi'),bt=document.getElementById('car-bt');
-  b.disabled=true;bi.innerHTML='<span class="spinner"><\/span>';bt.textContent='GENERATING...';
-  const n=document.getElementById('car-n').value||'—',d=document.getElementById('car-d').value||'—',doc=document.getElementById('car-doc').value||'—';
-  const prompt=`You are a vascular radiologist writing a formal carotid ultrasound report.\nPatient: ${n} | Date: ${d} | Physician: ${doc}\n\nFindings:\n${carCollect()}\n\nIMT criteria: <0.8mm = normal/ideal; 0.8–1.0mm = borderline (increased cardiovascular risk); >1.0mm or plaque = high risk (significant atherosclerosis).\n\nWrite a concise professional English report using EXACTLY this structure:\n\nCAROTID ULTRASOUND REPORT\nPatient: ${n}  Date: ${d}  Physician: ${doc}\n\nINTIMA-MEDIA THICKNESS (IMT):\nPLAQUE:\nFLOW AND STENOSIS:\nVERTEBRAL ARTERIES:\nIMPRESSION:\nRECOMMENDATION:\n\nInclude cardiovascular risk assessment based on IMT. Standard radiological English. Reference NASCET criteria for stenosis if applicable. Do NOT add any signature line, footer, date stamp, or closing statement after RECOMMENDATION.`;
+  b.disabled=true;bi.textContent='…';bt.textContent='GENERATING...';
+  const n=document.getElementById('car-n').value.trim(),d=document.getElementById('car-d').value||'',doc=document.getElementById('car-doc').value.trim();
   const oe=document.getElementById('car-rpt'),te=document.getElementById('car-rtxt');
-  oe.classList.add('vis');te.textContent='Generating...';
-  const payload={model:'claude-sonnet-4-20250514',max_tokens:1100,messages:[{role:'user',content:prompt}]};
-  callAPI(payload,
-    text=>{te.textContent=text;oe.scrollIntoView({behavior:'smooth',block:'start'});},
-    err=>{te.textContent=err;}
-  );
+  oe.classList.add('vis');
+  const text = localCarReport(n, d, doc, carCollect());
+  te.value=text;
+  oe.scrollIntoView({behavior:'smooth',block:'start'});
   b.disabled=false;bi.textContent='▶';bt.textContent='GENERATE REPORT';
 }
 
@@ -1356,10 +1442,10 @@ function copyRpt(id) {
 function certCopyField(fieldId, btnEl) {
   var ta = document.getElementById(fieldId);
   var text = ta ? ta.value : '';
-  var orig = btnEl ? btnEl.textContent : '⧉ 複製';
+  var orig = '⧉ COPY';
   if (!text.trim()) { if(btnEl){btnEl.textContent='（空白）'; setTimeout(function(){btnEl.textContent=orig;},1500);} return; }
-  var ok   = function() { if(btnEl){btnEl.textContent='✓ 已複製'; setTimeout(function(){btnEl.textContent=orig;},1500);} };
-  var fail = function() { if(btnEl){btnEl.textContent='✗ 失敗';   setTimeout(function(){btnEl.textContent=orig;},1500);} };
+  var ok   = function() { if(btnEl){btnEl.textContent='✓ COPIED'; setTimeout(function(){btnEl.textContent=orig;},1500);} };
+  var fail = function() { if(btnEl){btnEl.textContent='✗ FAILED'; setTimeout(function(){btnEl.textContent=orig;},1500);} };
   _doCopy(text, ok, fail);
 }
 
@@ -1535,6 +1621,7 @@ function opdBuildNote() {
     }},
     {key:'p', label:'P', freeId:'opd-p-free', extra:null}
   ];
+  function addPeriod(s){ s=s.trim(); return s && !/[.!?]$/.test(s) ? s+'.' : s; }
   var out = [];
   sections.forEach(function(sec, idx) {
     out.push(sec.label + ':');
@@ -1542,7 +1629,7 @@ function opdBuildNote() {
     if(sec.extra) { var ex = sec.extra(); if(ex) parts.push(ex); }
     var free = (document.getElementById(sec.freeId)||{value:''}).value.trim();
     if(free) parts.push(free);
-    if(parts.length) out.push(parts.join(', '));
+    if(parts.length) out.push(parts.map(addPeriod).join(' '));
     if(idx < sections.length - 1) out.push('---');
   });
   return out.join('\n');
@@ -1661,13 +1748,10 @@ function opdGenNote() {
           </div>
         </div>
 
-        <!-- Textarea output -->
-        <div class="cert-field-wrap" style="margin-top:16px">
-          <div class="cert-field-label">
-            診斷欄位內容
-            <button class="cert-copy-btn" onclick="certCopyField('cert-dx-text',this)">⧉ 複製診斷</button>
-          </div>
-          <textarea class="cert-textarea" id="cert-dx-text" placeholder="點選上方片語自動帶入，或直接在此輸入…"></textarea>
+        <!-- Output -->
+        <div class="report-out vis" id="cert-dx-rpt" style="margin-top:16px">
+          <div class="rep-head"><span>診斷欄位內容&nbsp;&nbsp;<button class="btn-copy" onclick="certCopyField('cert-dx-text',this)">⧉ COPY</button></span></div>
+          <textarea class="rep-content" id="cert-dx-text" spellcheck="false" placeholder="點選上方片語自動帶入，或直接在此輸入…"></textarea>
         </div>
       </div>
     </div>
@@ -1707,13 +1791,10 @@ function opdGenNote() {
           </div>
         </div>
 
-        <!-- Textarea output -->
-        <div class="cert-field-wrap" style="margin-top:16px">
-          <div class="cert-field-label">
-            醫囑欄位內容
-            <button class="cert-copy-btn" onclick="certCopyField('cert-order-text',this)">⧉ 複製醫囑</button>
-          </div>
-          <textarea class="cert-textarea" id="cert-order-text" placeholder="點選上方片語自動帶入，或直接在此輸入…"></textarea>
+        <!-- Output -->
+        <div class="report-out vis" id="cert-order-rpt" style="margin-top:16px">
+          <div class="rep-head"><span>醫囑欄位內容&nbsp;&nbsp;<button class="btn-copy" onclick="certCopyField('cert-order-text',this)">⧉ COPY</button></span></div>
+          <textarea class="rep-content" id="cert-order-text" spellcheck="false" placeholder="點選上方片語自動帶入，或直接在此輸入…"></textarea>
         </div>
       </div>
     </div>
@@ -1760,15 +1841,23 @@ function opdGenNote() {
       </div>
       <div class="sec-body">
         <div class="fl">Symptoms — 點選複選</div>
-        <div class="fg" id="opd-fg-s">
-          <span class="ftag" data-grp="s" data-val="abdominal pain" onclick="opdTag(this,'s')">abdominal pain</span>
-          <span class="ftag" data-grp="s" data-val="post prandial fullness" onclick="opdTag(this,'s')">post prandial fullness</span>
+        <!-- Row 1 -->
+        <div class="fg" id="opd-fg-s" style="margin-bottom:5px">
+          <span class="ftag" data-grp="s" data-val="persistent abdominal pain" onclick="opdTag(this,'s')">persistent abdominal pain</span>
+          <span class="ftag" data-grp="s" data-val="off and on abdominal pain" onclick="opdTag(this,'s')">off and on abdominal pain</span>
+        </div>
+        <!-- Row 2 -->
+        <div class="fg" style="margin-bottom:5px">
           <span class="ftag" data-grp="s" data-val="acid reflux" onclick="opdTag(this,'s')">acid reflux</span>
           <span class="ftag" data-grp="s" data-val="retrosternal pain" onclick="opdTag(this,'s')">retrosternal pain</span>
           <span class="ftag" data-grp="s" data-val="dysphagia" onclick="opdTag(this,'s')">dysphagia</span>
+          <span class="ftag" data-grp="s" data-val="post prandial fullness" onclick="opdTag(this,'s')">post prandial fullness</span>
           <span class="ftag" data-grp="s" data-val="easy satiety" onclick="opdTag(this,'s')">easy satiety</span>
           <span class="ftag" data-grp="s" data-val="retching" onclick="opdTag(this,'s')">retching</span>
           <span class="ftag" data-grp="s" data-val="hiccup" onclick="opdTag(this,'s')">hiccup</span>
+        </div>
+        <!-- Row 3 -->
+        <div class="fg" style="margin-bottom:5px">
           <span class="ftag" data-grp="s" data-val="chillness, muscular pain, nausea, vomiting and diarrhea for 2 days" onclick="opdTag(this,'s')">chillness / myalgia / N/V/D ×2d</span>
         </div>
         <div class="ot-field" style="margin-top:6px">
@@ -1788,15 +1877,25 @@ function opdGenNote() {
       </div>
       <div class="sec-body">
         <div class="fl">Physical Exam Findings</div>
-        <div class="fg" id="opd-fg-o">
+        <!-- Row 1 -->
+        <div class="fg" id="opd-fg-o" style="margin-bottom:5px">
           <span class="ftag" data-grp="o" data-val="no fever" onclick="opdTag(this,'o')">no fever</span>
+          <span class="ftag" data-grp="o" data-val="no tenderness" onclick="opdTag(this,'o')">no tenderness</span>
+          <span class="ftag" data-grp="o" data-val="normoactive bowel sound" onclick="opdTag(this,'o')">normoactive BS</span>
+        </div>
+        <!-- Row 2 -->
+        <div class="fg" style="margin-bottom:5px">
           <span class="ftag" data-grp="o" data-val="icteric sclera" onclick="opdTag(this,'o')">icteric sclera</span>
           <span class="ftag" data-grp="o" data-val="pale conjunctivae" onclick="opdTag(this,'o')">pale conjunctivae</span>
-          <span class="ftag" data-grp="o" data-val="no tenderness" onclick="opdTag(this,'o')">no tenderness</span>
-          <span class="ftag" data-grp="o" data-val="equivocal tenderness" onclick="opdTag(this,'o')">equivocal tenderness</span>
+        </div>
+        <!-- Row 3 -->
+        <div class="fg" style="margin-bottom:5px">
           <span class="ftag" data-grp="o" data-val="hyperactive bowel sound" onclick="opdTag(this,'o')">hyperactive BS</span>
-          <span class="ftag" data-grp="o" data-val="normoactive bowel sound" onclick="opdTag(this,'o')">normoactive BS</span>
           <span class="ftag" data-grp="o" data-val="hypoactive bowel sound" onclick="opdTag(this,'o')">hypoactive BS</span>
+          <span class="ftag" data-grp="o" data-val="equivocal tenderness" onclick="opdTag(this,'o')">equivocal tenderness</span>
+          <span class="ftag" data-grp="o" data-val="tenderness with rebounding pain" onclick="opdTag(this,'o')">tenderness with rebounding pain</span>
+          <span class="ftag" data-grp="o" data-val="right flank knocking pain" onclick="opdTag(this,'o')">right flank knocking pain</span>
+          <span class="ftag" data-grp="o" data-val="left flank knocking pain" onclick="opdTag(this,'o')">left flank knocking pain</span>
         </div>
         <!-- Body temp inline -->
         <div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap">
@@ -1827,18 +1926,26 @@ function opdGenNote() {
       </div>
       <div class="sec-body">
         <div class="fl">Management Plan — 點選複選</div>
-        <div class="fg" id="opd-fg-p">
-          <span class="ftag" data-grp="p" data-val="Abdominal symptoms workup with echo." onclick="opdTag(this,'p')">Echo workup</span>
-          <span class="ftag" data-grp="p" data-val="Upper-GI symptoms workup with EGD." onclick="opdTag(this,'p')">EGD workup</span>
-          <span class="ftag" data-grp="p" data-val="Lower-GI workup with CFS." onclick="opdTag(this,'p')">CFS workup</span>
-          <span class="ftag" data-grp="p" data-val="Proton pump inhibitor (PPI) to treat reflux esophagitis." onclick="opdTag(this,'p')">PPI for reflux</span>
-          <span class="ftag" data-grp="p" data-val="Medications for symptoms relief." onclick="opdTag(this,'p')">Symptom meds</span>
-          <span class="ftag" data-grp="p" data-val="Pathology workup to rule out neoplastic change." onclick="opdTag(this,'p')">Pathology workup</span>
-          <span class="ftag" data-grp="p" data-val="Helicobacter pylori eradication therapy." onclick="opdTag(this,'p')">H. pylori eradication</span>
-          <span class="ftag" data-grp="p" data-val="Check stool routine exam." onclick="opdTag(this,'p')">Stool routine</span>
-          <span class="ftag" data-grp="p" data-val="Check liver enzyme and tumor marker, regular follow-up." onclick="opdTag(this,'p')">LFT + tumor marker</span>
-          <span class="ftag" data-grp="p" data-val="Health education and life style modification." onclick="opdTag(this,'p')">Health education</span>
-          <span class="ftag" data-grp="p" data-val="Suggest return clinic as soon as possible if symptoms persisted." onclick="opdTag(this,'p')">Return if symptoms persist</span>
+        <!-- Row 1 -->
+        <div class="fg" id="opd-fg-p" style="margin-bottom:5px">
+          <span class="ftag" data-grp="p" data-val="Abdominal symptoms workup with echo" onclick="opdTag(this,'p')">echo workup</span>
+          <span class="ftag" data-grp="p" data-val="Upper-GI symptoms workup with EGD" onclick="opdTag(this,'p')">EGD workup</span>
+          <span class="ftag" data-grp="p" data-val="Lower-GI workup with CFS" onclick="opdTag(this,'p')">CFS workup</span>
+          <span class="ftag" data-grp="p" data-val="Pathology workup to rule out neoplastic change" onclick="opdTag(this,'p')">pathology workup</span>
+          <span class="ftag" data-grp="p" data-val="Check liver enzyme and tumor marker" onclick="opdTag(this,'p')">LFT + tumor marker</span>
+          <span class="ftag" data-grp="p" data-val="Check stool routine exam" onclick="opdTag(this,'p')">stool routine</span>
+          <span class="ftag" data-grp="p" data-val="Arrange blood and urine test" onclick="opdTag(this,'p')">arrange blood and urine test</span>
+        </div>
+        <!-- Row 2 -->
+        <div class="fg" style="margin-bottom:5px">
+          <span class="ftag" data-grp="p" data-val="Proton pump inhibitor (PPI) to treat reflux esophagitis" onclick="opdTag(this,'p')">PPI for reflux</span>
+          <span class="ftag" data-grp="p" data-val="Medications for symptoms relief" onclick="opdTag(this,'p')">symptoms meds</span>
+          <span class="ftag" data-grp="p" data-val="Helicobacter pylori eradication therapy" onclick="opdTag(this,'p')">H. pylori eradication</span>
+        </div>
+        <!-- Row 3 -->
+        <div class="fg" style="margin-bottom:5px">
+          <span class="ftag" data-grp="p" data-val="Health education and life style modification" onclick="opdTag(this,'p')">health education</span>
+          <span class="ftag" data-grp="p" data-val="Suggest return clinic as soon as possible if symptoms persisted" onclick="opdTag(this,'p')">return if symptoms persist</span>
         </div>
         <div class="ot-field" style="margin-top:6px">
           <label>Free text</label>
@@ -1848,22 +1955,10 @@ function opdGenNote() {
     </div>
 
     <!-- OUTPUT NOTE -->
-    <div class="section open" id="opd-sec-out" style="margin-top:4px;scroll-margin-top:14px">
-      <div class="sec-head" style="cursor:default;background:var(--text)">
-        <span class="sec-num" style="color:rgba(255,255,255,.4)">OUT</span>
-        <span class="sec-title" style="color:#fff;font-size:13px">Generated Note</span>
-        <button onclick="opdCopyNote()" id="opd-copy-btn"
-          style="padding:3px 10px;border:1px solid rgba(255,255,255,.25);border-radius:3px;
-                 background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);font-family:var(--mono);
-                 font-size:9px;letter-spacing:.06em;cursor:pointer;margin-left:auto">⧉ COPY</button>
-      </div>
-      <div class="sec-body" style="padding:0">
-        <textarea id="opd-note-out" readonly
-          style="width:100%;min-height:220px;font-family:var(--mono);font-size:12.5px;
-                 line-height:1.9;padding:16px 18px;border:none;outline:none;resize:vertical;
-                 background:var(--bg);color:var(--text)"
-          placeholder="點選上方片語後按 GENERATE NOTE，或選完後即時預覽…"></textarea>
-      </div>
+    <div class="report-out vis" id="opd-sec-out" style="margin-top:4px">
+      <div class="rep-head"><span>OPD STRUCTURED NOTE&nbsp;&nbsp;<button class="btn-copy" id="opd-copy-btn" onclick="opdCopyNote()">⧉ COPY</button></span></div>
+      <textarea class="rep-content" id="opd-note-out" spellcheck="false"
+        placeholder="點選上方片語後按 GENERATE NOTE，或選完後即時預覽…"></textarea>
     </div>
 
   </main>
