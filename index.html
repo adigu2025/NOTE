@@ -477,23 +477,23 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14
     <div class="section open" id="asec-kid">
       <div class="sec-head" onclick="tSec('asec-kid')"><span class="sec-num">05</span><span class="sec-title">Kidneys <span class="sec-sub">腎臟</span></span><span class="sec-status normal" id="ast-kid">NORMAL</span><span class="sec-chev">▾</span></div>
       <div class="sec-body">
-        <div class="two-col">
-          <div><div class="col-label">Left Kidney</div><div class="fg">
-            <span class="ftag sel-ok" data-val="left kidney unremarkable" data-lvl="ok" onclick="aTag(this,'kid')">Unremarkable</span>
-            <span class="ftag" data-val="left renal cyst" data-lvl="ok" onclick="aTag(this,'kid')">Renal cyst</span>
-            <span class="ftag" data-val="left nephrolithiasis" data-lvl="warn" onclick="aTag(this,'kid')">Nephrolithiasis</span>
-            <span class="ftag" data-val="left hydronephrosis" data-lvl="warn" onclick="aTag(this,'kid')">Hydronephrosis</span>
-            <span class="ftag" data-val="left renal mass" data-lvl="danger" onclick="aTag(this,'kid')">Renal mass</span>
-            <span class="ftag" data-val="left kidney small (chronic renal disease)" data-lvl="warn" onclick="aTag(this,'kid')">Small kidney</span>
-          </div></div>
-          <div><div class="col-label">Right Kidney</div><div class="fg">
-            <span class="ftag sel-ok" data-val="right kidney unremarkable" data-lvl="ok" onclick="aTag(this,'kid')">Unremarkable</span>
-            <span class="ftag" data-val="right renal cyst" data-lvl="ok" onclick="aTag(this,'kid')">Renal cyst</span>
-            <span class="ftag" data-val="right nephrolithiasis" data-lvl="warn" onclick="aTag(this,'kid')">Nephrolithiasis</span>
-            <span class="ftag" data-val="right hydronephrosis" data-lvl="warn" onclick="aTag(this,'kid')">Hydronephrosis</span>
-            <span class="ftag" data-val="right renal mass" data-lvl="danger" onclick="aTag(this,'kid')">Renal mass</span>
-            <span class="ftag" data-val="right kidney small (chronic renal disease)" data-lvl="warn" onclick="aTag(this,'kid')">Small kidney</span>
-          </div></div>
+        <div class="col-label">Right Kidney</div>
+        <div class="fg" style="margin-bottom:10px">
+          <span class="ftag sel-ok" data-val="right kidney unremarkable" data-lvl="ok" onclick="aTag(this,'kid')">Unremarkable</span>
+          <span class="ftag" data-val="right renal cyst" data-lvl="ok" onclick="aTag(this,'kid')">Renal cyst</span>
+          <span class="ftag" data-val="right nephrolithiasis" data-lvl="warn" onclick="aTag(this,'kid')">Nephrolithiasis</span>
+          <span class="ftag" data-val="right hydronephrosis" data-lvl="warn" onclick="aTag(this,'kid')">Hydronephrosis</span>
+          <span class="ftag" data-val="right renal mass" data-lvl="danger" onclick="aTag(this,'kid')">Renal mass</span>
+          <span class="ftag" data-val="right kidney small (chronic renal disease)" data-lvl="warn" onclick="aTag(this,'kid')">Small kidney</span>
+        </div>
+        <div class="col-label">Left Kidney</div>
+        <div class="fg">
+          <span class="ftag sel-ok" data-val="left kidney unremarkable" data-lvl="ok" onclick="aTag(this,'kid')">Unremarkable</span>
+          <span class="ftag" data-val="left renal cyst" data-lvl="ok" onclick="aTag(this,'kid')">Renal cyst</span>
+          <span class="ftag" data-val="left nephrolithiasis" data-lvl="warn" onclick="aTag(this,'kid')">Nephrolithiasis</span>
+          <span class="ftag" data-val="left hydronephrosis" data-lvl="warn" onclick="aTag(this,'kid')">Hydronephrosis</span>
+          <span class="ftag" data-val="left renal mass" data-lvl="danger" onclick="aTag(this,'kid')">Renal mass</span>
+          <span class="ftag" data-val="left kidney small (chronic renal disease)" data-lvl="warn" onclick="aTag(this,'kid')">Small kidney</span>
         </div>
         <div class="ot-field" style="margin-top:10px"><label>Other findings</label><textarea id="aot-kid" placeholder="e.g. bilateral small renal cysts..."></textarea></div>
       </div>
@@ -812,20 +812,72 @@ function localAbdReport(n, d, doc, findings) {
   });
 
   // Build impression
-  var abnormal = [];
-  var noteItems = [];
-  if(sections.liver && !/normal|unremarkable/i.test(sections.liver)) abnormal.push('liver: ' + sections.liver.split(';')[0]);
-  if(sections.gb && !/normal|unremarkable/i.test(sections.gb)) abnormal.push('gallbladder/bile duct: ' + sections.gb.split(';')[0]);
-  if(sections.pan && !/unremarkable/i.test(sections.pan)) noteItems.push('pancreas: ' + sections.pan.split(';')[0]);
-  if(sections.spl && !/normal/i.test(sections.spl)) noteItems.push('spleen: ' + sections.spl.split(';')[0]);
-  if(sections.kid && !/unremarkable/i.test(sections.kid)) noteItems.push('kidneys: ' + sections.kid.split(';')[0]);
-  var allFindings = abnormal.concat(noteItems);
+  var impItems = [];
 
-  var impression = allFindings.length
-    ? '1. ' + allFindings.map(function(f,i){var s=f.charAt(0).toUpperCase()+f.slice(1);if(!/[.!?]$/.test(s))s+='.';return (i===0?'':'\n'+(i+1)+'. ') + s;}).join('')
+  // ── LIVER ──
+  if(sections.liver && !/^normal size; homogeneous echotexture; no focal lesion$/i.test(sections.liver.trim())) {
+    var liverParts = [];
+    // Fatty liver (mutually exclusive grades, highest wins)
+    if(/grade 3 fatty liver/i.test(sections.liver))      liverParts.push('severe fatty liver');
+    else if(/grade 2 fatty liver/i.test(sections.liver)) liverParts.push('moderate fatty liver');
+    else if(/grade 1 fatty liver/i.test(sections.liver)) liverParts.push('mild fatty liver');
+    // Parenchymal (non-exclusive with fatty)
+    if(/cirrhotic change/i.test(sections.liver))         liverParts.push('overt parenchymal liver disease favor liver cirrhosis');
+    else if(/coarsened echotexture/i.test(sections.liver)) liverParts.push('parenchymal liver disease');
+    // Lesions (non-exclusive)
+    var lesionMatches = sections.liver.match(/simple hepatic cyst|hepatic hemangioma|hyperechoic nodule[^;]*/gi) || [];
+    var warnMatches   = sections.liver.match(/hypoechoic nodule[^;]*|mixed echogenicity mass[^;]*|hepatic calcification|portal vein thrombosis/gi) || [];
+    lesionMatches.concat(warnMatches).forEach(function(l){ liverParts.push(l.trim()); });
+    // Size/other non-normal findings not already captured
+    if(!liverParts.length) {
+      sections.liver.split(';').forEach(function(p){
+        p = p.trim();
+        if(p && !/^normal size$|^homogeneous echotexture$|^no focal lesion$/i.test(p)) liverParts.push(p);
+      });
+    }
+    if(liverParts.length) impItems.push('Liver: ' + liverParts.join('; '));
+  }
+
+  // ── GALLBLADDER / BILE DUCT ──
+  if(sections.gb) {
+    var gbParts = sections.gb.split(';').map(function(p){return p.trim();})
+      .filter(function(p){ return p && !/^gallbladder normal$|^CBD within normal limits$/i.test(p); });
+    if(gbParts.length) impItems.push('Gallbladder/bile duct: ' + gbParts.join('; '));
+  }
+
+  // ── PANCREAS ──
+  if(sections.pan) {
+    var panParts = sections.pan.split(';').map(function(p){return p.trim();})
+      .filter(function(p){ return p && !/^pancreas unremarkable$/i.test(p); });
+    if(panParts.length) impItems.push('Pancreas: ' + panParts.join('; '));
+  }
+
+  // ── SPLEEN ──
+  if(sections.spl) {
+    var splParts = sections.spl.split(';').map(function(p){return p.trim();})
+      .filter(function(p){ return p && !/^spleen normal in size and echotexture$/i.test(p); });
+    if(splParts.length) impItems.push('Spleen: ' + splParts.join('; '));
+  }
+
+  // ── KIDNEYS ──
+  if(sections.kid) {
+    var kidParts = sections.kid.split(';').map(function(p){return p.trim();})
+      .filter(function(p){ return p && !/^left kidney unremarkable$|^right kidney unremarkable$/i.test(p); });
+    if(kidParts.length) impItems.push('Kidneys: ' + kidParts.join('; '));
+  }
+
+  // ── OTHERS ──
+  if(sections.aoth) {
+    var aothParts = sections.aoth.split(';').map(function(p){return p.trim();})
+      .filter(function(p){ return p && !/^no ascites$|^aorta normal caliber$/i.test(p); });
+    if(aothParts.length) impItems.push('Other findings: ' + aothParts.join('; '));
+  }
+
+  var impression = impItems.length
+    ? impItems.map(function(f,i){var s=f.trim();if(!/[.!?]$/.test(s))s+='.';return (i+1)+'. '+s;}).join('\n')
     : '1. No significant abnormality detected on this examination.';
 
-  var reco = allFindings.length
+  var reco = impItems.length
     ? 'Clinical correlation recommended. Follow-up or further evaluation as clinically indicated.'
     : 'Routine follow-up as clinically indicated.';
 
@@ -880,20 +932,44 @@ function localThyReport(n, d, doc, findings) {
   var hasNod = nodLines.length > 0 && !/no thyroid nodule/i.test(nodLines[0]);
   var impression, reco;
   function ensurePeriod(s){ s=s.trim(); return (/[.!?]$/.test(s)?s:s+'.'); }
+
+  var thyImpItems = [];
+
+  // Gland findings (always include if abnormal)
+  if(gland && !/^thyroid gland normal in size and echogenicity; normal echogenicity and homogeneous texture$/i.test(gland.trim())) {
+    var glandParts = gland.split(';').map(function(p){return p.trim();})
+      .filter(function(p){ return p && !/thyroid gland normal in size and echogenicity|^normal echogenicity and homogeneous texture$/i.test(p); });
+    if(glandParts.length) thyImpItems.push(ensurePeriod(glandParts.join('; ')));
+  }
+
+  // Nodule findings
   if(!hasNod){
-    var glandPart = (gland && !/normal/i.test(gland)) ? ensurePeriod(gland.split(';')[0].charAt(0).toUpperCase()+gland.split(';')[0].slice(1)) : 'No significant abnormality of the thyroid gland.';
-    impression = '1. ' + glandPart + '\n2. No thyroid nodule identified.';
-    reco = 'Routine follow-up as clinically indicated.';
+    thyImpItems.push('No thyroid nodule identified.');
   } else {
-    // Extract TR category from nodule lines
     var trMatches = nodLines.map(function(l){ var m=l.match(/TR(\d)/); return m?'TR'+m[1]:null; }).filter(Boolean);
     var highestTR = trMatches.sort().reverse()[0] || 'TR3';
-    impression = '1. Thyroid nodule(s) identified. Highest ACR TI-RADS category: ' + highestTR + '.';
-    if(lymph && !/unremarkable|no cervical/i.test(lymph)) impression += '\n2. ' + ensurePeriod(lymph.charAt(0).toUpperCase()+lymph.slice(1));
-    reco = highestTR >= 'TR4'
-      ? 'FNA biopsy recommended per ACR TI-RADS 2017 guidelines based on nodule size and category. Clinical correlation advised.'
-      : 'Ultrasound surveillance per ACR TI-RADS 2017 guidelines. Clinical correlation advised.';
+    thyImpItems.push('Thyroid nodule(s) identified. Highest ACR TI-RADS category: ' + highestTR + '.');
   }
+
+  // Lymph nodes (always include if abnormal)
+  if(lymph && !/^no cervical lymphadenopathy$/i.test(lymph.trim())) {
+    var lymphParts = lymph.split(';').map(function(p){return p.trim();})
+      .filter(function(p){ return p && !/^no cervical lymphadenopathy$/i.test(p); });
+    if(lymphParts.length) thyImpItems.push(ensurePeriod(lymphParts.join('; ')));
+  }
+
+  if(!thyImpItems.length) thyImpItems.push('No significant abnormality detected.');
+  impression = thyImpItems.map(function(s,i){ return (i+1)+'. '+ensurePeriod(s); }).join('\n');
+
+  reco = hasNod
+    ? (function(){
+        var trMatches2 = nodLines.map(function(l){ var m=l.match(/TR(\d)/); return m?'TR'+m[1]:null; }).filter(Boolean);
+        var hTR = trMatches2.sort().reverse()[0] || 'TR3';
+        return hTR >= 'TR4'
+          ? 'FNA biopsy recommended per ACR TI-RADS 2017 guidelines based on nodule size and category. Clinical correlation advised.'
+          : 'Ultrasound surveillance per ACR TI-RADS 2017 guidelines. Clinical correlation advised.';
+      })()
+    : 'Routine follow-up as clinically indicated.';
 
   var headerPartsT = [];
   if(n && n !== '—') headerPartsT.push('Patient: ' + n);
@@ -945,9 +1021,11 @@ function localCarReport(n, d, doc, findings) {
                : /50-69%/i.test(plaque) ? 'moderate' : 'mild';
 
   var impression = [];
+  // IMT
   if(imtRisk==='high') impression.push('Increased carotid IMT indicating significant subclinical atherosclerosis and elevated cardiovascular risk.');
   else if(imtRisk==='borderline') impression.push('Borderline carotid IMT (0.8–1.0 mm). Intermediate cardiovascular risk.');
   else impression.push('Carotid IMT within normal limits bilaterally.');
+  // Plaque
   if(hasPlaque){
     if(stenosis==='severe') impression.push('Atherosclerotic plaque with severe stenosis (≥70%) identified. Urgent vascular surgery consultation recommended.');
     else if(stenosis==='moderate') impression.push('Atherosclerotic plaque with moderate stenosis (50–69%) identified. Vascular consultation recommended.');
@@ -955,8 +1033,18 @@ function localCarReport(n, d, doc, findings) {
   } else {
     impression.push('No significant carotid plaque identified.');
   }
-  if(flow && !/normal/i.test(flow)) impression.push('Abnormal carotid flow noted: ' + flow.split(';')[0] + '.');
-  if(vert && !/normal/i.test(vert)) impression.push('Vertebral artery abnormality noted: ' + vert.split(';')[0] + '.');
+  // Flow — include all abnormal tags
+  if(flow) {
+    flow.split(';').map(function(p){return p.trim();})
+      .filter(function(p){ return p && !/^right carotid flow normal|^left carotid flow normal/i.test(p); })
+      .forEach(function(p){ impression.push('Flow abnormality: ' + p + '.'); });
+  }
+  // Vertebral — include all abnormal tags
+  if(vert) {
+    vert.split(';').map(function(p){return p.trim();})
+      .filter(function(p){ return p && !/bilateral vertebral arteries normal|^normal/i.test(p); })
+      .forEach(function(p){ impression.push('Vertebral artery: ' + p + '.'); });
+  }
 
   var reco = imtRisk==='high' || hasPlaque
     ? 'Cardiovascular risk factor modification strongly recommended (lipid management, blood pressure control, lifestyle modification). Vascular surgery or cardiology referral as clinically indicated.'
@@ -1039,7 +1127,14 @@ function abdClear(){
 function abdCollect(){
   const lb={liver:'Liver',gb:'Gallbladder & Bile Duct',pan:'Pancreas',spl:'Spleen',kid:'Kidneys',aoth:'Others'};
   return Object.entries(lb).map(([o,l])=>{
-    const ts=Object.keys(aS[o]),ex=document.getElementById('aot-'+o)?.value.trim();
+    let ts=Object.keys(aS[o]);
+    if(o==='kid'){
+      const right=ts.filter(v=>/^right/i.test(v));
+      const left=ts.filter(v=>/^left/i.test(v));
+      const other=ts.filter(v=>!/^right|^left/i.test(v));
+      ts=[...right,...left,...other];
+    }
+    const ex=document.getElementById('aot-'+o)?.value.trim();
     return `${l}: ${[...ts,...(ex?[ex]:[])].join('; ')||'unremarkable'}`;
   }).join('\n');
 }
